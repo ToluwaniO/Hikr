@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "596323954938",
+    "firebase_url": "https://hikr-41391.firebaseio.com",
+    "project_id": "hikr-41391",
+    "storage_bucket": "hikr-41391.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:596323954938:android:f459d45bc4a24f0d",
+        "android_client_info": {
+          "package_name": "com.tpad.hikr.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "596323954938-3qn8re3crte2vuiji6fuvhhcvglhujfp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tpad.hikr.debug",
+            "certificate_hash": "5fe645040ec6ad66ef1d3475a347f4ef27411755"
+          }
+        },
+        {
+          "client_id": "596323954938-nvmv1rd0o3t34bv25043nirg7ds0teff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKZIVTSuqoVGxAOSq4V6YWHNwn4YUFi0M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "596323954938-nvmv1rd0o3t34bv25043nirg7ds0teff.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
