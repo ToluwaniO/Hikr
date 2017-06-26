@@ -87,17 +87,15 @@ public class MainNavActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
             // Handle the camera action
-            if(!(mainFragManager.findFragmentById(R.id.main_frame) instanceof HomeFragment)) {
+            if (!(mainFragManager.findFragmentById(R.id.main_frame) instanceof HomeFragment)) {
                 mainFragManager.beginTransaction().replace(R.id.main_frame, new HomeFragment()).commit();
             }
+        } else if (id == R.id.nav_discover) {
+                mainFragManager.beginTransaction().replace(R.id.main_frame, new HikerDiaryFragment()).commit();
         } else if (id == R.id.nav_active_hikes) {
             mainFragManager.beginTransaction().replace(R.id.main_frame, new ActiveHikesFragment()).commit();
         } else if (id == R.id.nav_hikr_diary) {
             mainFragManager.beginTransaction().replace(R.id.main_frame, new HikerDiaryFragment()).commit();
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
