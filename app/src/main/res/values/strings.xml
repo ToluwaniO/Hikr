@@ -19,4 +19,6 @@
 
     <string name="unknown_error">Unknown error</string>
 
+    <string name="success">Success</string>
+
 </resources>
