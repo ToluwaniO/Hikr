@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.tpad.hikr.R;
 
+
 public class SplashActivity extends AppCompatActivity {
 
     @Override
@@ -23,3 +24,4 @@ public class SplashActivity extends AppCompatActivity {
         startActivity(intent);
     }
 }
+
