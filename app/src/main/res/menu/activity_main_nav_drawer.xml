@@ -3,29 +3,32 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Home" />
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:title="Home" />
+        <item
+            android:id="@+id/nav_discover"
+            android:icon="@drawable/ic_discover"
+            android:title="Discover" />
         <item
             android:id="@+id/nav_active_hikes"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_explore"
             android:title="Active Hikes" />
         <item
             android:id="@+id/nav_hikr_diary"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_journal"
             android:title="Hikr Diary" />
     </group>
 
-    <item android:title="Communicate">
+    <item >
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/action_settings"
+                android:title="Settings"
+                android:icon="@drawable/ic_settings"/>
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="Logout"
+                android:icon="@drawable/ic_logout"/>
         </menu>
     </item>
 

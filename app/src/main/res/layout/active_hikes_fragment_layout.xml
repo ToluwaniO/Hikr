@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:weightSum="1">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/active_hikes_recycler"
+    <ImageView
+        android:id="@+id/imageView3"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="161dp"
+        android:layout_marginTop="150px"
+        android:layout_weight="0.26"
+        android:paddingTop="50dp"
+        app:srcCompat="@drawable/ic_hiker" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25px"
+        android:layout_weight="0.06"
+        android:text="Add a hike to get started tracking  your adventures!"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/colorAccent" />
 </LinearLayout>

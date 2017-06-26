@@ -2,81 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:orientation="vertical">
 
-    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/user_imgView"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_gravity="center"
-        app:civ_border_color="@color/cardview_shadow_end_color"
-        app:civ_border_width="2dp" />
 
-    <android.support.v7.widget.CardView
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="161dp"
+        android:layout_marginTop="150px"
+        android:layout_weight="0.22"
+        android:adjustViewBounds="false"
+        android:contentDescription=""
+        android:cropToPadding="false"
+        android:paddingTop="50px"
+        app:srcCompat="@drawable/ic_compass" />
+
+    <TextView
+        android:id="@+id/emptystatetext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        app:cardCornerRadius="3dp"
-        app:cardElevation="3dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/user_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="Tolu Olubode"
-                android:textAlignment="center"
-                android:textColor="#000"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/hike_number_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="HIKE NUMBER"
-                android:textAlignment="center"
-                android:textColor="#000"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/hike_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="27"
-                android:textAlignment="center"
-                android:textColor="#000"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/hike_distance_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="HIKE DISTANCE"
-                android:textAlignment="center"
-                android:textColor="#000"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/hike_distance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="27 Km"
-                android:textAlignment="center"
-                android:textColor="#000"
-                android:textSize="12sp" />
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-
-
-
+        android:layout_marginTop="25px"
+        android:layout_weight="0.22"
+        android:text="See all your achievements and upcoming hikes at a glance here! "
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#00A9DE" />
 </LinearLayout>
