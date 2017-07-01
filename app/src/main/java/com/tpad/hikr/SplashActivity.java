@@ -41,8 +41,6 @@ public class SplashActivity extends AppCompatActivity {
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
 
-
-
         mAuth = FirebaseAuth.getInstance();
 
         new Handler().postDelayed(new Runnable() {
