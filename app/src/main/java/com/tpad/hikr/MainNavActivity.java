@@ -3,7 +3,6 @@ package com.tpad.hikr;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -14,6 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.tpad.hikr.Fragments.ActiveHikesFragment;
+import com.tpad.hikr.Fragments.HikerDiaryFragment;
+import com.tpad.hikr.Fragments.HomeFragment;
 
 public class MainNavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
