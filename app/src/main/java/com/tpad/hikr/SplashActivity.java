@@ -39,10 +39,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
-
-
 
         mAuth = FirebaseAuth.getInstance();
 
