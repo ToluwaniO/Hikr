@@ -8,38 +8,6 @@
     android:orientation="vertical">
 
 
-    <LinearLayout
-        android:id="@+id/empty_state"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.22"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="match_parent"
-            android:layout_height="161dp"
-            android:layout_marginTop="150px"
-            android:layout_weight="0.22"
-            android:adjustViewBounds="false"
-            android:contentDescription=""
-            android:cropToPadding="false"
-            android:paddingTop="50px"
-            app:srcCompat="@drawable/ic_compass" />
-
-        <TextView
-            android:id="@+id/emptystatetext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25px"
-            android:layout_weight="0.22"
-            android:text="See all your achievements and upcoming hikes at a glance here! "
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="#00A9DE" />
-
-    </LinearLayout>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/discover_recycler"
         android:layout_width="match_parent"
