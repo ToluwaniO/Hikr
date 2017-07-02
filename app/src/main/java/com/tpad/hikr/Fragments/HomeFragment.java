@@ -38,8 +38,6 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.home_fragment_layout, container, false);
-        emptyState = (LinearLayout)rootView.findViewById(R.id.empty_state);
-        emptyState.setVisibility(View.GONE);
         discoverArrayList = new ArrayList<>();
         discoverAdapter = new DiscoverAdapter(discoverArrayList, rootView.getContext());
 
