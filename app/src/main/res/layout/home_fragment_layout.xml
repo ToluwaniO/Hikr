@@ -8,6 +8,53 @@
     android:orientation="vertical">
 
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp">
+
+        <ImageView
+            android:id="@+id/ic_location"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/ic_pin" />
+
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ottawa, Ontario, CA"
+            android:textAppearance="@android:style/TextAppearance.Material.Display1"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="24sp"
+            android:typeface="normal" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp">
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:text="Trails near you"
+            android:textAppearance="@android:style/TextAppearance.Material.Display1"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/discover_recycler"
         android:layout_width="match_parent"
