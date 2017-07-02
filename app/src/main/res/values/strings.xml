@@ -20,5 +20,8 @@
     <string name="unknown_error">Unknown error</string>
 
     <string name="success">Success</string>
+    
+    <string name="dicover_item_difficulty">difficulty:</string>
+    
 
 </resources>
