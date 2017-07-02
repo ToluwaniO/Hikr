@@ -33,11 +33,11 @@ public class HomeFragment extends Fragment {
     RecyclerView recyclerView;
     ArrayList<Discover> discoverArrayList;
     DiscoverAdapter discoverAdapter;
-    LinearLayout emptyState;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.home_fragment_layout, container, false);
+
         discoverArrayList = new ArrayList<>();
         discoverAdapter = new DiscoverAdapter(discoverArrayList, rootView.getContext());
 
