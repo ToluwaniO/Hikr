@@ -119,14 +119,11 @@
                 android:background="@color/cardview_shadow_start_color"
                 app:srcCompat="?attr/dividerHorizontal" />
 
-            <TextView
-                android:id="@+id/temporary_map"
+            <fragment
+                android:id="@+id/map_fragment"
+                android:name="com.google.android.gms.maps.MapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:background="@drawable/com_facebook_button_background"
-                android:text="MapView"
-                android:textAlignment="center"
-                android:textColor="#fff" />
+                android:layout_height="200dp" />
 
             <TextView
                 android:id="@+id/discover_item_review"
