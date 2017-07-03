@@ -21,7 +21,6 @@
             android:id="@+id/dicover_location_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_marginTop="0dp"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/breezeway" />
 
