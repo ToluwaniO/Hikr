@@ -1,5 +1,6 @@
 package com.tpad.hikr;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -99,6 +100,10 @@ public class MainNavActivity extends AppCompatActivity
             mainFragManager.beginTransaction().replace(R.id.main_frame, new ActiveHikesFragment()).commit();
         } else if (id == R.id.nav_hikr_diary) {
             mainFragManager.beginTransaction().replace(R.id.main_frame, new HikerDiaryFragment()).commit();
+        }
+        else if(id == R.id.action_settings){
+            Intent intent = new Intent(MainNavActivity.this, MapsActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
