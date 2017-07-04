@@ -8,10 +8,19 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 import com.tpad.hikr.R;
 
-public class DiscoverItem extends AppCompatActivity {
+public class DiscoverItem extends AppCompatActivity implements OnMapReadyCallback {
 
+    MapFragment mapFragment;
+    Boolean mapReady = false;
+    GoogleMap m_map;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,8 +33,17 @@ public class DiscoverItem extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("");
 
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-//
-        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
+        mapFragment.getMapAsync(this);
+    }
+
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mapReady = true;
+        m_map = googleMap;
+        LatLng newYork = new LatLng(40.7484, -73.9857);
+        CameraPosition target = CameraPosition.builder().target(newYork).zoom(14).build();
+        m_map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
     }
 }

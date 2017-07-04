@@ -5,10 +5,13 @@
     android:id="@+id/discover_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+
     android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp"
     android:layout_marginTop="10dp"
     android:paddingTop="0dp"
+    android:layout_margin="10dp"
+    android:paddingTop="5dp"
     app:cardCornerRadius="2dp"
     app:cardElevation="1dp">
 
@@ -21,6 +24,7 @@
             android:id="@+id/dicover_location_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:layout_marginTop="0dp"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/breezeway" />
 
