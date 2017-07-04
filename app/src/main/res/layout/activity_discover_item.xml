@@ -8,6 +8,8 @@
     android:orientation="vertical"
     tools:context="com.tpad.hikr.DiscoverItem">
 
+
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -92,15 +94,18 @@
                 android:text="The brrezeway trail is located along the eastern shore of Lake Ontario. The asphalt is ayfjg  dfg dgddg dyidg dygdjy dydydy dydysd"
                 android:textColor="@color/com_facebook_button_background_color_focused_disabled" />
 
-            <TextView
+            <Button
                 android:id="@+id/discover_item_read_more"
-                android:layout_width="match_parent"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="READ MORE"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                android:text="Read More"
                 android:textAlignment="center"
+                android:textAllCaps="false"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/discover_item_min_time"
@@ -190,10 +195,13 @@
 
             <Button
                 android:id="@+id/dicover_item_leave_review"
-                android:layout_width="match_parent"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:background="@color/cardview_light_background"
                 android:text="Enjoyed this trail? Leave a review"
+                android:textAllCaps="false"
                 android:textColor="@color/colorAccent" />
 
             <ImageView
@@ -279,15 +287,18 @@
 
             <Button
                 android:id="@+id/discover_item_issue_button"
-                android:layout_width="match_parent"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:background="@color/cardview_light_background"
-                android:text="Was there an issue? Report this trail?"
+                android:text="Was there an issue? Report this trail"
+                android:textAllCaps="false"
                 android:textColor="@color/colorAccent" />
 
             <Button
                 android:id="@+id/discover_item_start_hike"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
@@ -298,7 +309,6 @@
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
-
     <include layout="@layout/layout_toolbar"
         android:id="@+id/discover_item_toolbar"/>
 </android.support.design.widget.CoordinatorLayout>
