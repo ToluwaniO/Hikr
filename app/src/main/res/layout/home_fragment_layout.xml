@@ -26,9 +26,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingLeft="2dp"
             android:text="Ottawa, Ontario, CA"
             android:textAppearance="@android:style/TextAppearance.Material.Display1"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@color/com_facebook_likeview_text_color"
             android:textSize="24sp"
             android:typeface="normal" />
 
@@ -39,10 +40,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="5dp"
         android:text="Trails near you"
         android:textAppearance="@android:style/TextAppearance.Material.Display1"
-        android:textSize="24sp"
+        android:textColor="@color/com_facebook_likeview_text_color"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <android.support.v7.widget.RecyclerView
