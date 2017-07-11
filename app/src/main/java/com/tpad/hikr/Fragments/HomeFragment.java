@@ -1,8 +1,10 @@
 package com.tpad.hikr.Fragments;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.renderscript.Matrix4f;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -21,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.tpad.hikr.Adapters.DiscoverAdapter;
 import com.tpad.hikr.DataClasses.Discover;
 import com.tpad.hikr.DiscoverItem;
+import com.tpad.hikr.MainNavActivity;
 import com.tpad.hikr.R;
 
 import java.util.ArrayList;
@@ -33,6 +36,10 @@ public class HomeFragment extends Fragment {
     RecyclerView recyclerView;
     ArrayList<Discover> discoverArrayList;
     DiscoverAdapter discoverAdapter;
+    TextView locationTxtView;
+    private static final String TAG = HomeFragment.class.getSimpleName();
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -40,6 +47,8 @@ public class HomeFragment extends Fragment {
 
         discoverArrayList = new ArrayList<>();
         discoverAdapter = new DiscoverAdapter(discoverArrayList, rootView.getContext());
+
+        locationTxtView = (TextView)rootView.findViewById(R.id.location_txt_view);
 
         recyclerView = (RecyclerView)rootView.findViewById(R.id.discover_recycler);
 
@@ -64,5 +73,9 @@ public class HomeFragment extends Fragment {
             discoverArrayList.add(new Discover("Des Fees Lake Trail", "Gatineau, QC", "24km"));
             discoverAdapter.notifyDataSetChanged();
         }
+    }
+
+    public void onLocationFound(String location) {
+        locationTxtView.setText(location);
     }
 }
