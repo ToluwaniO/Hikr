@@ -33,7 +33,7 @@
             android:label="Hikr"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".DiscoverItem"
+            android:name=".HikeLocationActivity"
             android:theme="@style/TranparentTheme">
             android:parentActivityName="com.tpad.hikr.MainNavActivity" >
             <!-- Parent activity meta-data to support 4.0 and lower -->

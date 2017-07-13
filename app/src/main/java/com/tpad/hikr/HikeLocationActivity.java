@@ -16,7 +16,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.tpad.hikr.R;
 
-public class DiscoverItem extends AppCompatActivity implements OnMapReadyCallback {
+public class HikeLocationActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     MapFragment mapFragment;
     Boolean mapReady = false;

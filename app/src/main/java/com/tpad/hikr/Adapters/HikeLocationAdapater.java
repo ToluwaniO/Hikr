@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tpad.hikr.DataClasses.HikeLocationData;
-import com.tpad.hikr.DiscoverItem;
+import com.tpad.hikr.HikeLocationActivity;
 import com.tpad.hikr.R;
 
 import java.util.ArrayList;
@@ -20,12 +20,12 @@ import java.util.ArrayList;
  * Created by oguns on 6/30/2017.
  */
 
-public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.MyViewHolder> {
+public class HikeLocationAdapater extends RecyclerView.Adapter<HikeLocationAdapater.MyViewHolder> {
 
     ArrayList<HikeLocationData> hikeLocationDataList;
     Context context;
 
-    public DiscoverAdapter(ArrayList<HikeLocationData> hikeLocationDataList, Context context) {
+    public HikeLocationAdapater(ArrayList<HikeLocationData> hikeLocationDataList, Context context) {
         this.hikeLocationDataList = hikeLocationDataList;
         this.context = context;
     }
@@ -58,7 +58,7 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.MyView
             @Override
             public void onClick(View v) {
                 Log.d("Recycler", "clicked!");
-                Intent intent = new Intent(context, DiscoverItem.class);
+                Intent intent = new Intent(context, HikeLocationActivity.class);
                 context.startActivity(intent);
             }
         });
