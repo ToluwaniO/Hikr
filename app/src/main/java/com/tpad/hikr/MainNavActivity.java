@@ -61,7 +61,8 @@ public class MainNavActivity extends AppCompatActivity
         GoogleApiClient.OnConnectionFailedListener {
 
     private final String TAG = "NAVTAG";
-    FragmentManager mainFragManager;
+
+    //GOOGLE APIS
 
     private final int maxEntries = 5;
     private GoogleMap googleMap;
@@ -90,20 +91,10 @@ public class MainNavActivity extends AppCompatActivity
     private String[] mLikelyPlaceAttributions = new String[mMaxEntries];
     private LatLng[] mLikelyPlaceLatLngs = new LatLng[mMaxEntries];
 
-    onLocationFoundListener locationCallback;
-
+    FragmentManager mainFragManager;
     HomeFragment homeFragment;
     HikerDiaryFragment hikerDiaryFragment;
     ActiveHikesFragment activeHikesFragment;
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        if (googleMap != null) {
-            outState.putParcelable(KEY_CAMERA_POSITION, googleMap.getCameraPosition());
-            outState.putParcelable(KEY_LOCATION, mLastKnownLocation);
-            super.onSaveInstanceState(outState);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +133,7 @@ public class MainNavActivity extends AppCompatActivity
 
         mainFragManager = getSupportFragmentManager();
         mainFragManager.beginTransaction().add(R.id.main_frame, homeFragment).commit();
+
         googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */,
                         (GoogleApiClient.OnConnectionFailedListener) this /* OnConnectionFailedListener */)
@@ -154,6 +146,15 @@ public class MainNavActivity extends AppCompatActivity
 
         Log.d(TAG, "APP STARTED");
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (googleMap != null) {
+            outState.putParcelable(KEY_CAMERA_POSITION, googleMap.getCameraPosition());
+            outState.putParcelable(KEY_LOCATION, mLastKnownLocation);
+            super.onSaveInstanceState(outState);
+        }
     }
 
     @Override
@@ -217,7 +218,7 @@ public class MainNavActivity extends AppCompatActivity
         return true;
     }
 
-
+    //TODO: Should showCurrentplace be in onConnected or onMapReady?
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(TAG, "MAP CONNECTED");
@@ -232,7 +233,7 @@ public class MainNavActivity extends AppCompatActivity
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "MAP CONNECTION FAILED");
-        Log.d(TAG, connectionResult.getErrorMessage());
+//        Log.d(TAG, connectionResult.getErrorMessage());
     }
 
     @Override
@@ -240,44 +241,6 @@ public class MainNavActivity extends AppCompatActivity
         Log.d(TAG, "onMapReady");
         this.googleMap = googleMap;
         showCurrentPlace();
-    }
-
-    private void getDeviceLocation() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
-        if (mLocationPermissionGranted) {
-            mLastKnownLocation = LocationServices.FusedLocationApi
-                    .getLastLocation(googleApiClient);
-        }
-
-        // Set the map's camera position to the current location of the device.
-        if (mCameraPosition != null) {
-            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
-        } else if (mLastKnownLocation != null) {
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(mLastKnownLocation.getLatitude(),
-                            mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-        } else {
-            Log.d(TAG, "Current location is null. Using defaults.");
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        }
     }
 
     /**
@@ -299,8 +262,6 @@ public class MainNavActivity extends AppCompatActivity
         }
         showCurrentPlace();
     }
-
-
 
     /**
      * Prompts the user to select the current place from a list of likely places, and shows the
@@ -349,32 +310,18 @@ public class MainNavActivity extends AppCompatActivity
                             // Release the place likelihood buffer, to avoid memory leaks.
                             likelyPlaces.release();
                             homeFragment.onLocationFound(getCityName(mLikelyPlaceLatLngs[0]));
-
-                            // Show a dialog offering the user the list of likely places, and add a
-                            // marker at the selected place.
                         }
                     });
                 }
             });
 
             thread.start();
-
         }
 
         else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
-    /**
-     * Updates the map's UI settings based on whether the user has granted location permission.
-     */
-    private void updateLocationUI(TextView locationTxtView) {
-        if (mLikelyPlaceNames[0] != null){
-            String cityName = getCityName(mLikelyPlaceLatLngs[0]);
-            if(cityName != null) locationTxtView.setText(cityName);
         }
     }
 
@@ -392,9 +339,5 @@ public class MainNavActivity extends AppCompatActivity
         }
 
         return null;
-    }
-
-    public interface onLocationFoundListener{
-        public void onLocationFound(String location);
     }
 }
