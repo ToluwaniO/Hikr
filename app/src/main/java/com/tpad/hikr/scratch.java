@@ -5,5 +5,5 @@ package com.tpad.hikr;
  */
 
 public class scratch {
-    private static final String TTAG = scratch.class.getSimpleName()
+    
 }
