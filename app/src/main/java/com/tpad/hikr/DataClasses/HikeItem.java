@@ -4,17 +4,17 @@ package com.tpad.hikr.DataClasses;
  * Created by toluw on 6/17/2017.
  */
 
-public class Hikes {
+public class HikeItem extends HikeLocationData {
 
     String title, location, time;
 
-    public Hikes(String title, String location, String time) {
+    public HikeItem(String title, String location, String time) {
         this.title = title;
         this.location = location;
         this.time = time;
     }
 
-    public Hikes() {
+    public HikeItem() {
     }
 
     public String getTitle() {

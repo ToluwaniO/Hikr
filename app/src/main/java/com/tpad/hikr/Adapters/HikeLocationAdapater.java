@@ -8,11 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.tpad.hikr.DataClasses.Discover;
-import com.tpad.hikr.DiscoverItem;
+import com.tpad.hikr.DataClasses.HikeLocationData;
+import com.tpad.hikr.HikeLocationActivity;
 import com.tpad.hikr.R;
 
 import java.util.ArrayList;
@@ -21,13 +20,13 @@ import java.util.ArrayList;
  * Created by oguns on 6/30/2017.
  */
 
-public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.MyViewHolder> {
+public class HikeLocationAdapater extends RecyclerView.Adapter<HikeLocationAdapater.MyViewHolder> {
 
-    ArrayList<Discover> discoverList;
+    ArrayList<HikeLocationData> hikeLocationDataList;
     Context context;
 
-    public DiscoverAdapter(ArrayList<Discover> discoverList, Context context) {
-        this.discoverList = discoverList;
+    public HikeLocationAdapater(ArrayList<HikeLocationData> hikeLocationDataList, Context context) {
+        this.hikeLocationDataList = hikeLocationDataList;
         this.context = context;
     }
 
@@ -51,15 +50,15 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.MyView
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.name.setText(discoverList.get(position).getName());
-        holder.city.setText(discoverList.get(position).getCity());
-        holder.distance.setText(discoverList.get(position).getDistance());
+        holder.name.setText(hikeLocationDataList.get(position).getName());
+        holder.city.setText(hikeLocationDataList.get(position).getCity());
+        holder.distance.setText(hikeLocationDataList.get(position).getDistance());
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("Recycler", "clicked!");
-                Intent intent = new Intent(context, DiscoverItem.class);
+                Intent intent = new Intent(context, HikeLocationActivity.class);
                 context.startActivity(intent);
             }
         });
@@ -67,7 +66,7 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return discoverList.size();
+        return hikeLocationDataList.size();
     }
 
 }

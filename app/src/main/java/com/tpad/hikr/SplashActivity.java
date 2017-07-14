@@ -51,14 +51,11 @@ public class SplashActivity extends AppCompatActivity {
                 SplashActivity.this.finish();
             }
         }, delayLength);
-
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
         if(firebaseUser == null){
