@@ -25,18 +25,17 @@ public class HomeFragment extends Fragment {
     RecyclerView recyclerView;
     ArrayList<HikeLocationData> hikeLocationDataArrayList;
     HikeLocationAdapater hikeLocationAdapater;
-    TextView locationTxtView;
     private static final String TAG = HomeFragment.class.getSimpleName();
+    String location;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.home_fragment_layout, container, false);
+        View rootView = inflater.inflate(R.layout.home_fragment_layout, container, false);
 
         hikeLocationDataArrayList = new ArrayList<>();
         hikeLocationAdapater = new HikeLocationAdapater(hikeLocationDataArrayList, rootView.getContext());
 
-        locationTxtView = (TextView)rootView.findViewById(R.id.location_txt_view);
         recyclerView = (RecyclerView)rootView.findViewById(R.id.discover_recycler);
         setRecyclerView(rootView);
 
@@ -52,13 +51,16 @@ public class HomeFragment extends Fragment {
     }
 
     private void populate(){
-        for (int i = 0; i < 20; i ++){
+        hikeLocationDataArrayList.add(new HikeLocationData("Des Fees Lake Trail", "Ottawa", "24km"));
+        hikeLocationAdapater.notifyDataSetChanged();
+        for (int i = 1; i < 20; i ++){
             hikeLocationDataArrayList.add(new HikeLocationData("Des Fees Lake Trail", "Gatineau, QC", "24km"));
             hikeLocationAdapater.notifyDataSetChanged();
         }
     }
 
     public void onLocationFound(String location) {
-        locationTxtView.setText(location);
+        this.location = location;
+        //populate();
     }
 }

@@ -1,4 +1,4 @@
-package com.tpad.hikr;
+package com.tpad.hikr.Adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tpad.hikr.DataClasses.HikeItem;
+import com.tpad.hikr.R;
 
 import java.util.ArrayList;
 
