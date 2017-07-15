@@ -24,7 +24,6 @@ public class HikeLocationAdapater extends RecyclerView.Adapter<HikeLocationAdapa
 
     ArrayList<HikeLocationData> hikeLocationDataList;
     Context context;
-    private boolean locationPresent = false;
     private static final String TAG = HikeLocationAdapater.class.getSimpleName();
     private final int LOCATION_TYPE = 0;
     private final int LOCATION_CARD_TYPE =1;
