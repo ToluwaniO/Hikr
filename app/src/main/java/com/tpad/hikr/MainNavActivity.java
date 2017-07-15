@@ -25,9 +25,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -110,6 +112,7 @@ public class MainNavActivity extends AppCompatActivity
     private static final int RC_SIGN_IN = 123;
     private static final String EXTRA_SIGNED_IN_CONFIG = "extra_signed_in_config";
     private User userInfo;
+    private View headerView;
 
 
     @Override
@@ -144,6 +147,9 @@ public class MainNavActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        headerView = navigationView.getHeaderView(0);
+        setupHeaderView();
 
         homeFragment = new HomeFragment();
         hikerDiaryFragment = new HikerDiaryFragment();
@@ -387,6 +393,17 @@ public class MainNavActivity extends AppCompatActivity
                 Toast.makeText(this, "Sign in failed", Toast.LENGTH_LONG).show();
             }
 
+        }
+    }
+
+    public void setupHeaderView(){
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if(user != null){
+            ImageView profilePic = (ImageView) headerView.findViewById(R.id.nav_profile_pic);
+            TextView userName = (TextView) headerView.findViewById(R.id.nav_username);
+            Glide.with(this).load(user.getPhotoUrl()).into(profilePic);
+            userName.setText(user.getDisplayName());
         }
     }
 

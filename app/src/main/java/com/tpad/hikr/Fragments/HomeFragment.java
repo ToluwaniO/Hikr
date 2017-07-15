@@ -61,6 +61,10 @@ public class HomeFragment extends Fragment {
 
     public void onLocationFound(String location) {
         this.location = location;
+        if(hikeLocationDataArrayList.size()>0){
+            hikeLocationDataArrayList.get(0).setCity(location);
+            hikeLocationAdapater.notifyDataSetChanged();
+        }
         //populate();
     }
 }
