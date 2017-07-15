@@ -49,6 +49,50 @@
           "status": 2
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:596323954938:android:4fcf3176c59b5368",
+        "android_client_info": {
+          "package_name": "com.tpad.hikr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "596323954938-eq7thv4gdcaefrd78a4pi9jodpotd0vr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tpad.hikr",
+            "certificate_hash": "f5740dcfc0299b6a55f4fbffd6e4291a82dce93e"
+          }
+        },
+        {
+          "client_id": "596323954938-nvmv1rd0o3t34bv25043nirg7ds0teff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKZIVTSuqoVGxAOSq4V6YWHNwn4YUFi0M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "596323954938-nvmv1rd0o3t34bv25043nirg7ds0teff.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
     }
   ],
   "configuration_version": "1"

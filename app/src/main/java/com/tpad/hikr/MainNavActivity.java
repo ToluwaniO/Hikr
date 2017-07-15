@@ -1,5 +1,6 @@
 package com.tpad.hikr;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -25,7 +26,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.ResultCodes;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -44,6 +50,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.tpad.hikr.DataClasses.User;
 import com.tpad.hikr.Fragments.ActiveHikesFragment;
 import com.tpad.hikr.Fragments.HikerDiaryFragment;
 import com.tpad.hikr.Fragments.HomeFragment;
@@ -51,6 +60,7 @@ import com.tpad.hikr.Fragments.HomeFragment;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -96,6 +106,12 @@ public class MainNavActivity extends AppCompatActivity
     HikerDiaryFragment hikerDiaryFragment;
     ActiveHikesFragment activeHikesFragment;
 
+    private FirebaseAuth mAuth;
+    private static final int RC_SIGN_IN = 123;
+    private static final String EXTRA_SIGNED_IN_CONFIG = "extra_signed_in_config";
+    private User userInfo;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +120,8 @@ public class MainNavActivity extends AppCompatActivity
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
+
+        mAuth = FirebaseAuth.getInstance();
 
         setContentView(R.layout.activity_main_nav);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -211,6 +229,19 @@ public class MainNavActivity extends AppCompatActivity
         else if(id == R.id.action_settings){
             Intent intent = new Intent(MainNavActivity.this, MapsActivity.class);
             startActivity(intent);
+        }
+        else if(id == R.id.nav_logout){
+            mAuth.signOut();
+
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(
+                                    Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                                            new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+                            .build(),
+                    RC_SIGN_IN);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -340,4 +371,24 @@ public class MainNavActivity extends AppCompatActivity
 
         return null;
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow.
+        if (requestCode == RC_SIGN_IN) {
+            // Successfully signed in
+            if (resultCode == ResultCodes.OK) {
+                //Intent intent = new Intent(SplashActivity.this, MainNavActivity.class);
+                //startActivity(intent);
+                Toast.makeText(this, "Sign in succesful", Toast.LENGTH_LONG).show();
+                return;
+            } else {
+                Toast.makeText(this, "Sign in failed", Toast.LENGTH_LONG).show();
+            }
+
+        }
+    }
+
+
 }
