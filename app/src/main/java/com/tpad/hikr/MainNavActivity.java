@@ -75,7 +75,7 @@ public class MainNavActivity extends AppCompatActivity
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{
 
-    private final String TAG = "NAVTAG";
+    private final String TAG = MainNavActivity.class.getSimpleName();
     LinearLayout noNetwork;
     FrameLayout fragmentFrame;
 
@@ -202,8 +202,6 @@ public class MainNavActivity extends AppCompatActivity
         googleApiClient.connect();
 
         Log.d(TAG, "APP STARTED");
-
-        new GetLocationData(this, googleApiClient).execute("https://us-central1-hikr-41391.cloudfunctions.net/app/locations/ottawa,%20on%20hiking%20area");
     }
 
     @Override
@@ -336,6 +334,11 @@ public class MainNavActivity extends AppCompatActivity
         showCurrentPlace();
     }
 
+    public void getLocationData(String city, String country){
+        String query = city + "%20" + country + "%20hiking%20area";
+        Log.d(TAG, "Query: " + query);
+        new GetLocationData(this, googleApiClient).execute("https://us-central1-hikr-41391.cloudfunctions.net/app/locations/" + query);
+    }
     /**
      * Prompts the user to select the current place from a list of likely places, and shows the
      * current place on the map - provided the user has granted location permission.
@@ -383,6 +386,7 @@ public class MainNavActivity extends AppCompatActivity
                             // Release the place likelihood buffer, to avoid memory leaks.
                             likelyPlaces.release();
                             homeFragment.onLocationFound(getCityName(mLikelyPlaceLatLngs[0]));
+                            getLocationData(getCityName(mLikelyPlaceLatLngs[0]), getCountryName(mLikelyPlaceLatLngs[0]));
                         }
                     });
                 }
@@ -405,7 +409,23 @@ public class MainNavActivity extends AppCompatActivity
             List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude,1);
 
             if (addresses.size() > 0){
-                return addresses.get(0).getAddressLine(1); //+ ", " + addresses.get(0).getAddressLine(1);
+                return addresses.get(0).getLocality(); //+ ", " + addresses.get(0).getAddressLine(1);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private String getCountryName(LatLng latLng){
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude,1);
+
+            if (addresses.size() > 0) {
+                return addresses.get(0).getCountryName();
             }
         } catch (IOException e) {
             e.printStackTrace();
