@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,11 +66,11 @@ public class HomeFragment extends Fragment {
     }
 
     public void onLocationFound(String location) {
+        Log.d(TAG, "onLocationFound called");
         this.location = location;
         if(hikeLocationDataArrayList.size()>0){
             hikeLocationDataArrayList.get(0).setCity(location);
             hikeLocationAdapater.notifyDataSetChanged();
         }
-        //populate();
     }
 }

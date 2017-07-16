@@ -165,17 +165,6 @@ public class MainNavActivity extends AppCompatActivity
 
         Log.d(TAG, "APP STARTED");
 
-//        Thread thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                QueryUtils.Companion.setApiClient(googleApiClient);
-//                locationDataList = QueryUtils.Companion.getHikeLocations("https://us-central1-hikr-41391.cloudfunctions.net/app/locations/ottawa,%20on%20hiking%20area");
-//            }
-//        });
-//        thread.start();
-//
-//        thread.
-
         new GetLocationData(this, googleApiClient).execute("https://us-central1-hikr-41391.cloudfunctions.net/app/locations/ottawa,%20on%20hiking%20area");
         
     }
