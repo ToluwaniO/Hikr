@@ -10,6 +10,8 @@ import android.content.pm.Signature;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -115,6 +117,7 @@ public class MainNavActivity extends AppCompatActivity
     private List<HikeLocationData> locationDataList;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,53 +127,59 @@ public class MainNavActivity extends AppCompatActivity
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
-        mAuth = FirebaseAuth.getInstance();
+        if(isConnected()) {
 
-        setContentView(R.layout.activity_main_nav);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+            mAuth = FirebaseAuth.getInstance();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+            setContentView(R.layout.activity_main_nav);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            });
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.setDrawerListener(toggle);
+            toggle.syncState();
 
-        headerView = navigationView.getHeaderView(0);
-        setupHeaderView();
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
 
-        homeFragment = new HomeFragment();
-        hikerDiaryFragment = new HikerDiaryFragment();
-        activeHikesFragment = new ActiveHikesFragment();
+            headerView = navigationView.getHeaderView(0);
+            setupHeaderView();
 
-        mainFragManager = getSupportFragmentManager();
-        mainFragManager.beginTransaction().add(R.id.main_frame, homeFragment).commit();
+            homeFragment = new HomeFragment();
+            hikerDiaryFragment = new HikerDiaryFragment();
+            activeHikesFragment = new ActiveHikesFragment();
 
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */,
-                        (GoogleApiClient.OnConnectionFailedListener) this /* OnConnectionFailedListener */)
-                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
-                .addApi(LocationServices.API)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .build();
-        googleApiClient.connect();
+            mainFragManager = getSupportFragmentManager();
+            mainFragManager.beginTransaction().add(R.id.main_frame, homeFragment).commit();
 
-        Log.d(TAG, "APP STARTED");
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this /* FragmentActivity */,
+                            (GoogleApiClient.OnConnectionFailedListener) this /* OnConnectionFailedListener */)
+                    .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+                    .addApi(LocationServices.API)
+                    .addApi(Places.GEO_DATA_API)
+                    .addApi(Places.PLACE_DETECTION_API)
+                    .build();
+            googleApiClient.connect();
 
-        new GetLocationData(this, googleApiClient).execute("https://us-central1-hikr-41391.cloudfunctions.net/app/locations/ottawa,%20on%20hiking%20area");
+            Log.d(TAG, "APP STARTED");
+
+            new GetLocationData(this, googleApiClient).execute("https://us-central1-hikr-41391.cloudfunctions.net/app/locations/ottawa,%20on%20hiking%20area");
+        }
+        else {
+
+        }
         
     }
 
@@ -396,6 +405,17 @@ public class MainNavActivity extends AppCompatActivity
             }
 
         }
+    }
+
+    public boolean isConnected(){
+        ConnectivityManager cm =
+                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+        return isConnected;
     }
 
     public void setupHeaderView(){
