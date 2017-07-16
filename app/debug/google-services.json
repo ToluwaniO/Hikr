@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "596323954938-3qn8re3crte2vuiji6fuvhhcvglhujfp.apps.googleusercontent.com",
+          "client_id": "596323954938-dcehjl6et3bmter1dvnfjb4fbfd3cad8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.tpad.hikr.debug",
-            "certificate_hash": "5fe645040ec6ad66ef1d3475a347f4ef27411755"
+            "certificate_hash": "f5740dcfc0299b6a55f4fbffd6e4291a82dce93e"
           }
         },
         {
@@ -59,11 +59,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "596323954938-eq7thv4gdcaefrd78a4pi9jodpotd0vr.apps.googleusercontent.com",
+          "client_id": "596323954938-qi6fmup9j22gnf6veqnib5oo9l7htpti.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.tpad.hikr",
-            "certificate_hash": "f5740dcfc0299b6a55f4fbffd6e4291a82dce93e"
+            "certificate_hash": "84dde7acb5d8ef3acf9e06c4e45e326f8997be21"
           }
         },
         {
