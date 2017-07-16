@@ -87,16 +87,19 @@ public class SplashActivity extends AppCompatActivity {
                 // Sign in failed
                 if (response == null) {
                     // User pressed back button
+                    signIn();
                     showSnackbar(R.string.sign_in_cancelled);
                     return;
                 }
 
                 if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                     showSnackbar(R.string.no_internet_connection);
+                    finish();
                     return;
                 }
 
                 if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                    signIn();
                     showSnackbar(R.string.unknown_error);
                     return;
                 }
@@ -109,6 +112,7 @@ public class SplashActivity extends AppCompatActivity {
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
+                        .setIsSmartLockEnabled(false)
                         .setAvailableProviders(
                                 Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                                         new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
@@ -118,11 +122,11 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void showSnackbar(int id){
-        Snackbar.make(coordinatorLayout, getString(id), Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(coordinatorLayout, getString(id), Snackbar.LENGTH_LONG).show();
     }
 
     public void showSnackbar(String text){
-        Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_LONG).show();
     }
 }
 
