@@ -31,7 +31,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,6 +76,8 @@ public class MainNavActivity extends AppCompatActivity
         GoogleApiClient.OnConnectionFailedListener{
 
     private final String TAG = "NAVTAG";
+    LinearLayout noNetwork;
+    FrameLayout fragmentFrame;
 
     //GOOGLE APIS
 
@@ -127,60 +131,79 @@ public class MainNavActivity extends AppCompatActivity
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
-        if(isConnected()) {
+        setContentView(R.layout.activity_main_nav);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        noNetwork = (LinearLayout)findViewById(R.id.no_network_layout);
+        fragmentFrame = (FrameLayout)findViewById(R.id.main_frame);
 
-            mAuth = FirebaseAuth.getInstance();
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
 
-            setContentView(R.layout.activity_main_nav);
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+
+
+        noNetwork.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isConnected()){
+                    setUpView();
                 }
-            });
-
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.setDrawerListener(toggle);
-            toggle.syncState();
-
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-            navigationView.setNavigationItemSelectedListener(this);
-
-            headerView = navigationView.getHeaderView(0);
-            setupHeaderView();
-
-            homeFragment = new HomeFragment();
-            hikerDiaryFragment = new HikerDiaryFragment();
-            activeHikesFragment = new ActiveHikesFragment();
-
-            mainFragManager = getSupportFragmentManager();
-            mainFragManager.beginTransaction().add(R.id.main_frame, homeFragment).commit();
-
-            googleApiClient = new GoogleApiClient.Builder(this)
-                    .enableAutoManage(this /* FragmentActivity */,
-                            (GoogleApiClient.OnConnectionFailedListener) this /* OnConnectionFailedListener */)
-                    .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
-                    .addApi(LocationServices.API)
-                    .addApi(Places.GEO_DATA_API)
-                    .addApi(Places.PLACE_DETECTION_API)
-                    .build();
-            googleApiClient.connect();
-
-            Log.d(TAG, "APP STARTED");
-
-            new GetLocationData(this, googleApiClient).execute("https://us-central1-hikr-41391.cloudfunctions.net/app/locations/ottawa,%20on%20hiking%20area");
+            }
+        });
+        noNetwork = (LinearLayout)findViewById(R.id.no_network_layout);
+        fragmentFrame = (FrameLayout)findViewById(R.id.main_frame);
+        if(isConnected()) {
+            setUpView();
         }
         else {
-
+            fragmentFrame.setVisibility(View.GONE);
+            noNetwork.setVisibility(View.VISIBLE);
         }
         
+    }
+
+    public void setUpView(){
+        noNetwork.setVisibility(View.GONE);
+        fragmentFrame.setVisibility(View.VISIBLE);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        mAuth = FirebaseAuth.getInstance();
+
+        headerView = navigationView.getHeaderView(0);
+        setupHeaderView();
+
+        homeFragment = new HomeFragment();
+        hikerDiaryFragment = new HikerDiaryFragment();
+        activeHikesFragment = new ActiveHikesFragment();
+
+        mainFragManager = getSupportFragmentManager();
+        mainFragManager.beginTransaction().add(R.id.main_frame, homeFragment).commit();
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */,
+                        (GoogleApiClient.OnConnectionFailedListener) this /* OnConnectionFailedListener */)
+                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+                .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .build();
+        googleApiClient.connect();
+
+        Log.d(TAG, "APP STARTED");
+
+        new GetLocationData(this, googleApiClient).execute("https://us-central1-hikr-41391.cloudfunctions.net/app/locations/ottawa,%20on%20hiking%20area");
     }
 
     @Override
