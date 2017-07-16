@@ -9,7 +9,6 @@
     android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp"
     android:layout_marginTop="10dp"
-    android:layout_margin="10dp"
     app:cardCornerRadius="2dp"
     app:cardElevation="1dp">
 
@@ -22,7 +21,6 @@
             android:id="@+id/dicover_location_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_marginTop="0dp"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/breezeway" />
 
@@ -55,6 +53,18 @@
             android:paddingBottom="5dp"
             android:textColor="@color/cardview_dark_background"
             tools:text="24km" />
+
+        <RatingBar
+            android:id="@+id/discover_rating_bar"
+            style="@style/Base.Widget.AppCompat.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="2dp"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:paddingBottom="5dp"
+            android:stepSize="0.1" />
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

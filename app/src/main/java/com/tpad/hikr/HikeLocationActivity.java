@@ -1,11 +1,14 @@
 package com.tpad.hikr;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -14,6 +17,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.tpad.hikr.DataClasses.HikeLocationData;
 import com.tpad.hikr.R;
 
 public class HikeLocationActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -21,6 +25,9 @@ public class HikeLocationActivity extends AppCompatActivity implements OnMapRead
     MapFragment mapFragment;
     Boolean mapReady = false;
     GoogleMap m_map;
+    HikeLocationData hikeLocationData;
+    Bitmap bitmap;
+    private static final String TAG = HikeLocationActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +40,15 @@ public class HikeLocationActivity extends AppCompatActivity implements OnMapRead
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("");
 
+        hikeLocationData = (HikeLocationData) getIntent().getParcelableExtra(HikeLocationData.class.getSimpleName());
+        if(hikeLocationData.getImage() == null){
+            Log.d(TAG, "image is null");
+        }
+        else {
+            Log.d(TAG, "Image exists");
+        }
+        //bitmap = (Bitmap) getIntent().getParcelableExtra("image");
+        Log.d(TAG, "rating " + hikeLocationData.getRating());
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
         mapFragment.getMapAsync(this);
     }

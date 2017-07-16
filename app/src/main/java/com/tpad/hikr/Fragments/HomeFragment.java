@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tpad.hikr.Adapters.HikeLocationAdapater;
@@ -16,6 +17,7 @@ import com.tpad.hikr.DataClasses.HikeLocationData;
 import com.tpad.hikr.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by toluw on 6/15/2017.
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
     RecyclerView recyclerView;
+    ProgressBar progressBar;
     ArrayList<HikeLocationData> hikeLocationDataArrayList;
     HikeLocationAdapater hikeLocationAdapater;
     private static final String TAG = HomeFragment.class.getSimpleName();
@@ -36,6 +39,7 @@ public class HomeFragment extends Fragment {
         hikeLocationDataArrayList = new ArrayList<>();
         hikeLocationAdapater = new HikeLocationAdapater(hikeLocationDataArrayList, rootView.getContext());
 
+        progressBar = (ProgressBar)rootView.findViewById(R.id.home_progressbar);
         recyclerView = (RecyclerView)rootView.findViewById(R.id.discover_recycler);
         setRecyclerView(rootView);
 
@@ -47,16 +51,17 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(hikeLocationAdapater);
-        populate();
+        //populate();
     }
 
-    private void populate(){
+    public void populate(List<HikeLocationData> data){
         hikeLocationDataArrayList.add(new HikeLocationData("Des Fees Lake Trail", "Ottawa", "24km"));
         hikeLocationAdapater.notifyDataSetChanged();
-        for (int i = 1; i < 20; i ++){
-            hikeLocationDataArrayList.add(new HikeLocationData("Des Fees Lake Trail", "Gatineau, QC", "24km"));
+        for (int i = 0; i < data.size(); i ++){
+            hikeLocationDataArrayList.add(data.get(i));
             hikeLocationAdapater.notifyDataSetChanged();
         }
+        progressBar.setVisibility(View.GONE);
     }
 
     public void onLocationFound(String location) {

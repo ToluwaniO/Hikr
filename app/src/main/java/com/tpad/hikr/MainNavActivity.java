@@ -1,20 +1,21 @@
 package com.tpad.hikr;
 
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -31,8 +32,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,35 +41,30 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.tpad.hikr.DataClasses.HikeLocationData;
 import com.tpad.hikr.DataClasses.User;
 import com.tpad.hikr.Fragments.ActiveHikesFragment;
 import com.tpad.hikr.Fragments.HikerDiaryFragment;
 import com.tpad.hikr.Fragments.HomeFragment;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 public class MainNavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener{
 
     private final String TAG = "NAVTAG";
 
@@ -113,6 +107,7 @@ public class MainNavActivity extends AppCompatActivity
     private static final String EXTRA_SIGNED_IN_CONFIG = "extra_signed_in_config";
     private User userInfo;
     private View headerView;
+    private List<HikeLocationData> locationDataList;
 
 
     @Override
@@ -170,6 +165,19 @@ public class MainNavActivity extends AppCompatActivity
 
         Log.d(TAG, "APP STARTED");
 
+//        Thread thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                QueryUtils.Companion.setApiClient(googleApiClient);
+//                locationDataList = QueryUtils.Companion.getHikeLocations("https://us-central1-hikr-41391.cloudfunctions.net/app/locations/ottawa,%20on%20hiking%20area");
+//            }
+//        });
+//        thread.start();
+//
+//        thread.
+
+        new GetLocationData(this, googleApiClient).execute("https://us-central1-hikr-41391.cloudfunctions.net/app/locations/ottawa,%20on%20hiking%20area");
+        
     }
 
     @Override
@@ -404,6 +412,37 @@ public class MainNavActivity extends AppCompatActivity
             TextView userName = (TextView) headerView.findViewById(R.id.nav_username);
             Glide.with(this).load(user.getPhotoUrl()).into(profilePic);
             userName.setText(user.getDisplayName());
+        }
+    }
+
+    private class GetLocationData extends AsyncTask<String, Void, List<HikeLocationData>>{
+
+        List<HikeLocationData> locationDataList;
+        GoogleApiClient googleApiClient;
+        Context context;
+
+        public GetLocationData(Context context, GoogleApiClient googleApiClient) {
+            this.googleApiClient = googleApiClient;
+            this.context = context;
+        }
+
+        @Override
+        protected List<HikeLocationData> doInBackground(String... urls) {
+            String url = urls[0];
+            QueryUtils.Companion.putContext(context);
+            QueryUtils.Companion.setApiClient(googleApiClient);
+            locationDataList = QueryUtils.Companion.getHikeLocations(url);
+            return locationDataList;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(List<HikeLocationData> hikeLocationDatas) {
+            homeFragment.populate(hikeLocationDatas);
         }
     }
 
