@@ -1,11 +1,7 @@
 package com.tpad.hikr.Fragments;
 
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.renderscript.Matrix4f;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,19 +10,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-import com.tpad.hikr.Adapters.DiscoverAdapter;
-import com.tpad.hikr.DataClasses.Discover;
-import com.tpad.hikr.DiscoverItem;
-import com.tpad.hikr.MainNavActivity;
+import com.tpad.hikr.Adapters.HikeLocationAdapater;
+import com.tpad.hikr.DataClasses.HikeLocationData;
 import com.tpad.hikr.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by toluw on 6/15/2017.
@@ -34,48 +26,51 @@ import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
     RecyclerView recyclerView;
-    ArrayList<Discover> discoverArrayList;
-    DiscoverAdapter discoverAdapter;
-    TextView locationTxtView;
+    ProgressBar progressBar;
+    ArrayList<HikeLocationData> hikeLocationDataArrayList;
+    HikeLocationAdapater hikeLocationAdapater;
     private static final String TAG = HomeFragment.class.getSimpleName();
-
+    String location;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.home_fragment_layout, container, false);
+        View rootView = inflater.inflate(R.layout.home_fragment_layout, container, false);
 
-        discoverArrayList = new ArrayList<>();
-        discoverAdapter = new DiscoverAdapter(discoverArrayList, rootView.getContext());
+        hikeLocationDataArrayList = new ArrayList<>();
+        hikeLocationAdapater = new HikeLocationAdapater(hikeLocationDataArrayList, rootView.getContext());
 
-        locationTxtView = (TextView)rootView.findViewById(R.id.location_txt_view);
-
+        progressBar = (ProgressBar)rootView.findViewById(R.id.home_progressbar);
         recyclerView = (RecyclerView)rootView.findViewById(R.id.discover_recycler);
-
         setRecyclerView(rootView);
-
 
         return rootView;
     }
 
     private void setRecyclerView(View v){
-
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(v.getContext(), 1);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(discoverAdapter);
-
-        populate();
+        recyclerView.setAdapter(hikeLocationAdapater);
+        //populate();
     }
 
-    private void populate(){
-        for (int i = 0; i < 20; i ++){
-            discoverArrayList.add(new Discover("Des Fees Lake Trail", "Gatineau, QC", "24km"));
-            discoverAdapter.notifyDataSetChanged();
+    public void populate(List<HikeLocationData> data){
+        hikeLocationDataArrayList.add(new HikeLocationData("Des Fees Lake Trail", "Ottawa", "24km"));
+        hikeLocationAdapater.notifyDataSetChanged();
+        for (int i = 0; i < data.size(); i ++){
+            hikeLocationDataArrayList.add(data.get(i));
+            hikeLocationAdapater.notifyDataSetChanged();
         }
+        progressBar.setVisibility(View.GONE);
     }
 
     public void onLocationFound(String location) {
-        locationTxtView.setText(location);
+        Log.d(TAG, location);
+        this.location = location;
+        if(hikeLocationDataArrayList.size()>0){
+            hikeLocationDataArrayList.get(0).setCity(location);
+            hikeLocationAdapater.notifyDataSetChanged();
+        }
     }
 }

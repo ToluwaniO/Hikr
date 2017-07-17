@@ -15,11 +15,55 @@
       },
       "oauth_client": [
         {
-          "client_id": "596323954938-3qn8re3crte2vuiji6fuvhhcvglhujfp.apps.googleusercontent.com",
+          "client_id": "596323954938-dcehjl6et3bmter1dvnfjb4fbfd3cad8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.tpad.hikr.debug",
-            "certificate_hash": "5fe645040ec6ad66ef1d3475a347f4ef27411755"
+            "certificate_hash": "f5740dcfc0299b6a55f4fbffd6e4291a82dce93e"
+          }
+        },
+        {
+          "client_id": "596323954938-nvmv1rd0o3t34bv25043nirg7ds0teff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKZIVTSuqoVGxAOSq4V6YWHNwn4YUFi0M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "596323954938-nvmv1rd0o3t34bv25043nirg7ds0teff.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:596323954938:android:4fcf3176c59b5368",
+        "android_client_info": {
+          "package_name": "com.tpad.hikr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "596323954938-qi6fmup9j22gnf6veqnib5oo9l7htpti.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tpad.hikr",
+            "certificate_hash": "84dde7acb5d8ef3acf9e06c4e45e326f8997be21"
           }
         },
         {
