@@ -60,12 +60,10 @@ import com.tpad.hikr.DataClasses.HikeLocationData;
 import com.tpad.hikr.DataClasses.User;
 import com.tpad.hikr.Fragments.ActiveHikesFragment;
 import com.tpad.hikr.Fragments.HikerDiaryFragment;
+import com.tpad.hikr.Fragments.HikrDiscoverFragment;
 import com.tpad.hikr.Fragments.HomeFragment;
 
 import java.io.IOException;
-import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -258,7 +256,7 @@ public class MainNavActivity extends AppCompatActivity
                 homeFragment.onLocationFound(getCityName(mLikelyPlaceLatLngs[0]));
             }
         } else if (id == R.id.nav_discover) {
-            mainFragManager.beginTransaction().replace(R.id.main_frame, hikerDiaryFragment).commit();
+            mainFragManager.beginTransaction().replace(R.id.main_frame, new HikrDiscoverFragment()).commit();
         } else if (id == R.id.nav_active_hikes) {
             mainFragManager.beginTransaction().replace(R.id.main_frame, activeHikesFragment).commit();
         } else if (id == R.id.nav_hikr_diary) {

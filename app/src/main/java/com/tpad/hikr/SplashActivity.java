@@ -82,6 +82,7 @@ public class SplashActivity extends AppCompatActivity {
                 Intent intent = new Intent(SplashActivity.this, MainNavActivity.class);
                 startActivity(intent);
                 finish();
+               // Log.d(TAG, "succesful");
                 return;
             } else {
                 // Sign in failed
