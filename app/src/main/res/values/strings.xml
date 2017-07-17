@@ -24,5 +24,8 @@
     <string name="dicover_item_difficulty">difficulty:</string>
     <string name="title_activity_maps">Map</string>
 
+    <string name="no_network">Ooops, looks like you don\'t have internet connection</string>
+    <string name="try_again">Try Again</string>
+
 
 </resources>

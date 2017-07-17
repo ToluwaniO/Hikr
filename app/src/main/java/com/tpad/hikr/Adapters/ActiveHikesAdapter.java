@@ -1,4 +1,4 @@
-package com.tpad.hikr;
+package com.tpad.hikr.Adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tpad.hikr.DataClasses.Hikes;
+import com.tpad.hikr.DataClasses.HikeItem;
+import com.tpad.hikr.R;
 
 import java.util.ArrayList;
 
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 
 public class ActiveHikesAdapter extends RecyclerView.Adapter<ActiveHikesAdapter.ViewHolder> {
 
-    ArrayList<Hikes> hikesList;
+    ArrayList<HikeItem> hikeItemList;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -33,8 +34,8 @@ public class ActiveHikesAdapter extends RecyclerView.Adapter<ActiveHikesAdapter.
         }
     }
 
-    public ActiveHikesAdapter(ArrayList<Hikes> hikesList) {
-        this.hikesList = hikesList;
+    public ActiveHikesAdapter(ArrayList<HikeItem> hikeItemList) {
+        this.hikeItemList = hikeItemList;
     }
 
     @Override
@@ -46,14 +47,14 @@ public class ActiveHikesAdapter extends RecyclerView.Adapter<ActiveHikesAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.locationTxt.setText(hikesList.get(position).getLocation());
-        holder.timeTxt.setText(hikesList.get(position).getTime());
-        holder.titleTxt.setText(hikesList.get(position).getTitle());
+        holder.locationTxt.setText(hikeItemList.get(position).getLocation());
+        holder.timeTxt.setText(hikeItemList.get(position).getTime());
+        holder.titleTxt.setText(hikeItemList.get(position).getTitle());
     }
 
     @Override
     public int getItemCount() {
-        return hikesList.size();
+        return hikeItemList.size();
     }
 
 }

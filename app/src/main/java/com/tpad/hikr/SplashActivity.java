@@ -42,15 +42,24 @@ public class SplashActivity extends AppCompatActivity {
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
 
         mAuth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        if(firebaseUser == null){
+            signIn();
+            showSnackbar(R.string.unknown_error);
+        }
+        else{
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                showSnackbar(R.string.success);
                 Intent intent = new Intent(SplashActivity.this, MainNavActivity.class);
                 SplashActivity.this.startActivity(intent);
                 SplashActivity.this.finish();
-            }
-        }, delayLength);
+                }
+            }, delayLength);
+        }
+
 
 
     }
@@ -59,15 +68,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-
-        if(firebaseUser == null){
-            startSignInActivity();
-        }
-        else {
-            Log.d("email", firebaseUser.getEmail());
-            showSnackbar(R.string.success);
-        }
     }
 
     @Override
@@ -82,31 +82,38 @@ public class SplashActivity extends AppCompatActivity {
                 Intent intent = new Intent(SplashActivity.this, MainNavActivity.class);
                 startActivity(intent);
                 finish();
+               // Log.d(TAG, "succesful");
+                return;
             } else {
                 // Sign in failed
                 if (response == null) {
                     // User pressed back button
-                    //showSnackbar(R.string.sign_in_cancelled);
+                    signIn();
+                    showSnackbar(R.string.sign_in_cancelled);
                     return;
                 }
 
                 if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    //showSnackbar(R.string.no_internet_connection);
+                    showSnackbar(R.string.no_internet_connection);
+                    finish();
                     return;
                 }
 
                 if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                    //showSnackbar(R.string.unknown_error);
+                    signIn();
+                    showSnackbar(R.string.unknown_error);
+                    return;
                 }
             }
 
         }
     }
 
-    public void startSignInActivity(){
+    public void signIn(){
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
+                        .setIsSmartLockEnabled(false)
                         .setAvailableProviders(
                                 Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                                         new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
@@ -116,7 +123,11 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void showSnackbar(int id){
-        Snackbar.make(coordinatorLayout, getString(id), Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(coordinatorLayout, getString(id), Snackbar.LENGTH_LONG).show();
+    }
+
+    public void showSnackbar(String text){
+        Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_LONG).show();
     }
 }
 
