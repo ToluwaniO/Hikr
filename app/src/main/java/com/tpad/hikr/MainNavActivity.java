@@ -1,12 +1,8 @@
 package com.tpad.hikr;
 
-import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -20,7 +16,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -60,7 +55,6 @@ import com.tpad.hikr.DataClasses.HikeLocationData;
 import com.tpad.hikr.DataClasses.User;
 import com.tpad.hikr.Fragments.ActiveHikesFragment;
 import com.tpad.hikr.Fragments.HikerDiaryFragment;
-import com.tpad.hikr.Fragments.HikrDiscoverFragment;
 import com.tpad.hikr.Fragments.HomeFragment;
 
 import java.io.IOException;
@@ -383,8 +377,9 @@ public class MainNavActivity extends AppCompatActivity
                             }
                             // Release the place likelihood buffer, to avoid memory leaks.
                             likelyPlaces.release();
-                            homeFragment.onLocationFound(getCityName(mLikelyPlaceLatLngs[0]));
-                            getLocationData(getCityName(mLikelyPlaceLatLngs[0]), getCountryName(mLikelyPlaceLatLngs[0]));
+                            LatLng a = mLikelyPlaceLatLngs[0];
+                            homeFragment.onLocationFound(getCityName(a));
+                            getLocationData(getCityName(a), getCountryName(a));
                         }
                     });
                 }
@@ -485,6 +480,7 @@ public class MainNavActivity extends AppCompatActivity
 
         @Override
         protected List<HikeLocationData> doInBackground(String... urls) {
+            Log.d(TAG, "doInBackground() called");
             String url = urls[0];
             QueryUtils.Companion.putContext(context);
             QueryUtils.Companion.setApiClient(googleApiClient);

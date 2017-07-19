@@ -11,10 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.tpad.hikr.Adapters.HikeLocationAdapater;
-import com.tpad.hikr.DataClasses.HikeLocationData;
 import com.tpad.hikr.R;
 
 import java.util.ArrayList;

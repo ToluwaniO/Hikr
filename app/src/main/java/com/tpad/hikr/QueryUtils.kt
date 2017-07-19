@@ -45,7 +45,7 @@ class QueryUtils(url: String) {
         var mGoogleApiClient : GoogleApiClient? = null
         var context : Context? = null
 
-        private val TAG = scratch::class.java.simpleName
+        private val TAG = QueryUtils::class.java.simpleName
 
         fun setApiClient(client : GoogleApiClient) {
             mGoogleApiClient = client
@@ -59,8 +59,10 @@ class QueryUtils(url: String) {
 
             try {
                 url = URL(a)
+                Log.d(TAG, "url is not null")
             }
             catch (e : Exception){
+                Log.d(TAG, "url is null")
                 e.printStackTrace()
             }
 
@@ -93,11 +95,14 @@ class QueryUtils(url: String) {
                     inputStream = urlConnection.inputStream
                     jsonResponse = readFromStream(inputStream)!!
 
-                    Log.e(TAG, "Error ${urlConnection.responseCode} ${urlConnection.responseMessage}")
+                    Log.d(TAG, "Error ${urlConnection.responseCode} ${urlConnection.responseMessage}")
+                }
+                else{
+                    Log.d(TAG, "Error ${urlConnection.responseCode} ${urlConnection.responseMessage}")
                 }
             }
             catch (e : IOException){
-                Log.e(TAG, "problem retrieving eartchquake results", e)
+                Log.e(TAG, "problem retrieving earthquake results", e)
             }
             finally {
                 if(urlConnection != null) urlConnection.disconnect()
@@ -138,10 +143,6 @@ class QueryUtils(url: String) {
             }
 
             val hikeLocationList = ArrayList<HikeLocationData>()
-            val stream = ByteArrayOutputStream()
-
-            val byteArray = stream.toByteArray()
-
 
             try{
                 val root : JSONObject
@@ -154,11 +155,15 @@ class QueryUtils(url: String) {
                     val length = results.length()
 
                     for(i in 0..length-1){
+                        Log.d(TAG, i.toString())
                         val locationItem = results.getJSONObject(i)
                         val arrayItem = HikeLocationData()
                         arrayItem.name = locationItem.getString("name")
+                        Log.d(TAG, arrayItem.name)
                         arrayItem.address = locationItem.getString("formatted_address")
+                        Log.d(TAG, arrayItem.address)
                         arrayItem.image = addPhoto(locationItem.getString("place_id"))
+                        Log.d(TAG, "place-id ${locationItem.getString("place_id")}")
                         arrayItem.rating = locationItem.getDouble("rating")
                         arrayItem.latitude = locationItem.getJSONObject("geometry").getJSONObject("location").getDouble("lat");
                         arrayItem.longitude = locationItem.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
@@ -175,7 +180,7 @@ class QueryUtils(url: String) {
         }
 
         fun getHikeLocations(link: String): ArrayList<HikeLocationData> {
-
+            Log.d(TAG, "get hike location called")
             try {
                 Thread.sleep(2000)
             } catch (e: InterruptedException) {
@@ -184,16 +189,16 @@ class QueryUtils(url: String) {
 
             val url = createUrl(link)
 
-            Log.d("URL", url.toString())
+            Log.d(TAG, url.toString())
 
             var json: String? = null
             try {
                 json = makeHttpRequest(url!!)
                 if (json != null) {
-                    Log.d("json", "not null")
+                    Log.d(TAG, "json not null")
                 }
             } catch (e: IOException) {
-                Log.d("URL CONNECTION", "IO", e)
+                Log.d(TAG, "IO", e)
             }
 
             return extractHikeLocations(json)
@@ -214,6 +219,9 @@ class QueryUtils(url: String) {
                         .getBitmap()
                 // Get the attribution text.
                 val attribution = photo.getAttributions()
+                Log.d(TAG, attribution.toString())
+
+                photoMetadataBuffer.release()
 
                 return image
             }

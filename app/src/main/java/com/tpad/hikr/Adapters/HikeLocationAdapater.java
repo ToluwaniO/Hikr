@@ -14,9 +14,7 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.tpad.hikr.DataClasses.HikeLocationData;
 import com.tpad.hikr.HikeLocationActivity;
-import com.tpad.hikr.QueryUtils;
 import com.tpad.hikr.R;
 
 import java.util.ArrayList;
