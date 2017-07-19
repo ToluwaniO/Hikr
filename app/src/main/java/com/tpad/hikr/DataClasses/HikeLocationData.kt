@@ -7,7 +7,7 @@ import android.os.Parcelable
  * Created by oguns on 7/18/2017.
  */
 data class HikeLocationData(var name: String, var placeId: String, var address: String, var latitude : Double, var longitude: Double,
-            var email: String, var phoneNumber: String, var rating: Double, var city: String, var distance: Double)
+            var email: String, var phoneNumber: String, var rating: Double, var city: String, var distance: Int = 0)
     : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
@@ -19,7 +19,7 @@ data class HikeLocationData(var name: String, var placeId: String, var address: 
             parcel.readString(),
             parcel.readDouble(),
             parcel.readString(),
-            parcel.readDouble()) {
+            parcel.readInt()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -32,7 +32,7 @@ data class HikeLocationData(var name: String, var placeId: String, var address: 
         parcel.writeString(phoneNumber)
         parcel.writeDouble(rating)
         parcel.writeString(city)
-        parcel.writeDouble(distance)
+        parcel.writeInt(distance)
     }
 
     override fun describeContents(): Int {
@@ -48,4 +48,10 @@ data class HikeLocationData(var name: String, var placeId: String, var address: 
             return arrayOfNulls(size)
         }
     }
+
+    constructor() : this("", "", "", 0.0, 0.0,
+    "", "", 0.0, "", 0)
+    constructor(city: String) : this("", "", "", 0.0, 0.0,
+            "", "", 0.0, city, 0)
+
 }

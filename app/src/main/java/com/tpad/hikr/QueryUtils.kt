@@ -153,22 +153,34 @@ class QueryUtils(url: String) {
                     val results : JSONArray = root.getJSONArray("results")
 
                     val length = results.length()
+                    var i : Int = 0
 
-                    for(i in 0..length-1){
-                        Log.d(TAG, i.toString())
-                        val locationItem = results.getJSONObject(i)
-                        val arrayItem = HikeLocationData()
-                        arrayItem.name = locationItem.getString("name")
-                        Log.d(TAG, arrayItem.name)
-                        arrayItem.address = locationItem.getString("formatted_address")
-                        Log.d(TAG, arrayItem.address)
-                        arrayItem.image = addPhoto(locationItem.getString("place_id"))
-                        Log.d(TAG, "place-id ${locationItem.getString("place_id")}")
-                        arrayItem.rating = locationItem.getDouble("rating")
-                        arrayItem.latitude = locationItem.getJSONObject("geometry").getJSONObject("location").getDouble("lat");
-                        arrayItem.longitude = locationItem.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
-                        arrayItem.city = getCityName(LatLng(arrayItem.latitude, arrayItem.longitude))
-                        hikeLocationList.add(arrayItem)
+                    while (i < length){
+                        try{
+                            Log.d(TAG, i.toString())
+                            val locationItem = results.getJSONObject(i)
+                            val arrayItem = HikeLocationData()
+                            arrayItem.name = locationItem.getString("name")
+                            Log.d(TAG, arrayItem.name)
+                            arrayItem.address = locationItem.getString("formatted_address")
+                            Log.d(TAG, arrayItem.address)
+                            arrayItem.placeId = locationItem.getString("place_id")
+                            Log.d(TAG, "place-id ${locationItem.getString("place_id")}")
+                            arrayItem.rating = locationItem.getDouble("rating")
+                            Log.d(TAG, "rating- ${arrayItem.rating}")
+                            arrayItem.latitude = locationItem.getJSONObject("geometry").getJSONObject("location").getDouble("lat");
+                            arrayItem.longitude = locationItem.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
+                            //arrayItem.city = )
+                            val city = getCityName(LatLng(arrayItem.latitude, arrayItem.longitude))
+                            if(city != null)arrayItem.city = city
+                            else arrayItem.city = ""
+                            i++
+                            hikeLocationList.add(arrayItem)
+                        }
+                        catch(e : JSONException){
+                            Log.d(TAG, e.toString())
+                            i++
+                        }
                     }
                 }
             }

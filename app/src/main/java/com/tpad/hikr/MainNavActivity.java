@@ -76,7 +76,7 @@ public class MainNavActivity extends AppCompatActivity
     private final int maxEntries = 5;
     private GoogleMap googleMap;
     private CameraPosition mCameraPosition;
-    private GoogleApiClient googleApiClient;
+    GoogleApiClient googleApiClient;
 
     // A default location (Sydney, Australia) and default zoom to use when location permission is
     // not granted.
@@ -495,7 +495,9 @@ public class MainNavActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(List<HikeLocationData> hikeLocationDatas) {
-            homeFragment.populate(hikeLocationDatas);
+            Log.d(TAG, "onProgressUpdate");
+            Log.d(TAG, "size: " + hikeLocationDatas.size());
+            homeFragment.populate(hikeLocationDatas, googleApiClient);
         }
     }
 

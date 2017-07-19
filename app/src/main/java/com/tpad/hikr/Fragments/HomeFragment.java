@@ -12,7 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.tpad.hikr.Adapters.HikeLocationAdapater;
+import com.tpad.hikr.DataClasses.HikeLocationData;
+import com.tpad.hikr.MainNavActivity;
 import com.tpad.hikr.R;
 
 import java.util.ArrayList;
@@ -29,38 +32,41 @@ public class HomeFragment extends Fragment {
     HikeLocationAdapater hikeLocationAdapater;
     private static final String TAG = HomeFragment.class.getSimpleName();
     String location;
+    View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.home_fragment_layout, container, false);
-
+        rootView = inflater.inflate(R.layout.home_fragment_layout, container, false);
         hikeLocationDataArrayList = new ArrayList<>();
-        hikeLocationAdapater = new HikeLocationAdapater(hikeLocationDataArrayList, rootView.getContext());
 
         progressBar = (ProgressBar)rootView.findViewById(R.id.home_progressbar);
         recyclerView = (RecyclerView)rootView.findViewById(R.id.discover_recycler);
-        setRecyclerView(rootView);
+        //setRecyclerView(rootView);
 
         return rootView;
     }
 
-    private void setRecyclerView(View v){
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(v.getContext(), 1);
+    private void setRecyclerView(){
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(rootView.getContext(), 1);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(hikeLocationAdapater);
         //populate();
     }
 
-    public void populate(List<HikeLocationData> data){
-        hikeLocationDataArrayList.add(new HikeLocationData("Des Fees Lake Trail", "Ottawa", "24km"));
-        hikeLocationAdapater.notifyDataSetChanged();
+    public void populate(List<HikeLocationData> data, GoogleApiClient googleApiClient){
+        //hikeLocationDataArrayList.add(new HikeLocationData("Waiting..."));
+        //hikeLocationAdapater.notifyDataSetChanged();
+        hikeLocationAdapater = new HikeLocationAdapater(hikeLocationDataArrayList, rootView.getContext(), googleApiClient);
+        setRecyclerView();
         for (int i = 0; i < data.size(); i ++){
             hikeLocationDataArrayList.add(data.get(i));
             hikeLocationAdapater.notifyDataSetChanged();
         }
         progressBar.setVisibility(View.GONE);
+        Log.d(TAG, data.size() + "");
+        Log.d(TAG, "View populated");
     }
 
     public void onLocationFound(String location) {
