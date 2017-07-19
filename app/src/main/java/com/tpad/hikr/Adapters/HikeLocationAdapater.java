@@ -24,8 +24,6 @@ import com.google.android.gms.location.places.PlacePhotoMetadataResult;
 import com.google.android.gms.location.places.Places;
 import com.tpad.hikr.DataClasses.HikeLocationData;
 import com.tpad.hikr.HikeLocationActivity;
-import com.tpad.hikr.MainNavActivity;
-import com.tpad.hikr.PhotoTask;
 import com.tpad.hikr.R;
 
 import java.util.ArrayList;
