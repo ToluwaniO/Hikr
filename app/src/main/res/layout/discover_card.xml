@@ -22,7 +22,9 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:indeterminate="true" />
+            android:layout_margin="5dp"
+            android:indeterminate="true"
+            android:padding="5dp" />
 
         <ImageView
             android:id="@+id/dicover_location_image"
