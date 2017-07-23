@@ -55,6 +55,8 @@ class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment
         progressBar = rootView.findViewById(R.id.home_progressbar) as ProgressBar
         recyclerView = rootView.findViewById(R.id.discover_recycler) as RecyclerView
 
+        setRecyclerView(googleApiClient)
+
         location = getCityName(latLng) +  ", " + getCountryName(latLng)
         Log.d(TAG, "onCreateView")
         val query = getCityName(latLng) + "%20" + getCountryName(latLng) + "hiking%20area"
@@ -64,15 +66,10 @@ class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment
             hikeLocationDataArrayList.copyFrom(savedInstanceState.getParcelableArrayList<HikeLocationData>(LOCATION_LIST))
             Log.d(TAG, "savedInstanced used for list")
         }
-        if(!dataSet) {
+        if(hikeLocationAdapater.itemCount <= 1) {
             GetLocationData(rootView.context, googleApiClient).execute("https://us-central1-hikr-41391.cloudfunctions.net/app/locations/"+query)
             Log.d(TAG, "dataSet not available")
         }
-        else {
-            setRecyclerView(googleApiClient)
-            Log.d(TAG, "data set available")
-        }
-
         return rootView
     }
 
@@ -95,6 +92,7 @@ class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment
             recyclerView.layoutManager = layoutManager
             recyclerView.itemAnimator = DefaultItemAnimator()
             recyclerView.adapter = hikeLocationAdapater
+            hikeLocationDataArrayList.add(HikeLocationData(getCityName(latLng) + ", " + getCountryName(latLng)))
         }
 
 
@@ -140,9 +138,8 @@ class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment
         override fun doInBackground(vararg urls: String): ArrayList<HikeLocationData> {
             Log.d(TAG, "doInBackground() called")
             val url = urls[0]
-            QueryUtils.putContext(context)
             googleApiClient?.let { QueryUtils.setApiClient(googleApiClient) }
-            locDataList = QueryUtils.getHikeLocations(url)
+            locDataList = QueryUtils.getHikeLocations(url, getCityName(latLng), getCountryName(latLng), context)
             return locDataList
         }
 
@@ -153,7 +150,7 @@ class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment
         override fun onPostExecute(result: ArrayList<HikeLocationData>) {
             Log.d(TAG, "onProgressUpdate")
             Log.d(TAG, "size: " + result.size)
-            hikeLocationDataArrayList = result
+            hikeLocationDataArrayList.copyFrom(result)
             dataSet = true
             setRecyclerView(googleApiClient)
             progressBar.visibility = View.GONE
