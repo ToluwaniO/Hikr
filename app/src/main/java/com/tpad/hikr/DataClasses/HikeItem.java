@@ -4,7 +4,7 @@ package com.tpad.hikr.DataClasses;
  * Created by toluw on 6/17/2017.
  */
 
-public class HikeItem extends HikeLocationData {
+public class HikeItem  {
 
     String title, location, time;
 

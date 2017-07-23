@@ -49,6 +49,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:11.0.1'
     compile 'com.google.android.gms:play-services-location:11.0.1'
     compile 'com.google.android.gms:play-services-places:11.0.1'
+    compile 'org.afinal.simplecache:a-simple-cache:1.0'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0-RC0'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"

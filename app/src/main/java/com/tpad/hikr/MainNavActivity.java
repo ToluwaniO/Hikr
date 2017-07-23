@@ -1,12 +1,8 @@
 package com.tpad.hikr;
 
-import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -14,13 +10,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -60,10 +57,10 @@ import com.tpad.hikr.DataClasses.HikeLocationData;
 import com.tpad.hikr.DataClasses.User;
 import com.tpad.hikr.Fragments.ActiveHikesFragment;
 import com.tpad.hikr.Fragments.HikerDiaryFragment;
-import com.tpad.hikr.Fragments.HikrDiscoverFragment;
 import com.tpad.hikr.Fragments.HomeFragment;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -82,7 +79,7 @@ public class MainNavActivity extends AppCompatActivity
     private final int maxEntries = 5;
     private GoogleMap googleMap;
     private CameraPosition mCameraPosition;
-    private GoogleApiClient googleApiClient;
+    GoogleApiClient googleApiClient;
 
     // A default location (Sydney, Australia) and default zoom to use when location permission is
     // not granted.
@@ -98,6 +95,8 @@ public class MainNavActivity extends AppCompatActivity
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
+    private static final String KEY_LATLNG = "latlng";
+    private static final String HOME_TAG = "home";
 
     // Used for selecting the current place.
     private final int mMaxEntries = 5;
@@ -110,25 +109,20 @@ public class MainNavActivity extends AppCompatActivity
     HomeFragment homeFragment;
     HikerDiaryFragment hikerDiaryFragment;
     ActiveHikesFragment activeHikesFragment;
+    String location;
+
+    boolean savedUsed = false;
+    boolean latDataAvailable = false;
 
     private FirebaseAuth mAuth;
     private static final int RC_SIGN_IN = 123;
     private static final String EXTRA_SIGNED_IN_CONFIG = "extra_signed_in_config";
-    private User userInfo;
     private View headerView;
     private List<HikeLocationData> locationDataList;
 
-
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
-            mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
-        }
-
         setContentView(R.layout.activity_main_nav);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -150,20 +144,24 @@ public class MainNavActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-
-
         noNetwork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(isConnected()){
-                    setUpView();
+                    setUpView(savedInstanceState == null);
                 }
             }
         });
-        noNetwork = (LinearLayout)findViewById(R.id.no_network_layout);
-        fragmentFrame = (FrameLayout)findViewById(R.id.main_frame);
+
+        if(savedInstanceState != null) {
+            mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+            mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
+            mLikelyPlaceLatLngs = (LatLng[]) savedInstanceState.getParcelableArray(KEY_LATLNG);
+            savedUsed = true;
+            Log.d(TAG, "savedInstance available");
+        }
         if(isConnected()) {
-            setUpView();
+            setUpView(savedInstanceState == null);
         }
         else {
             fragmentFrame.setVisibility(View.GONE);
@@ -172,7 +170,7 @@ public class MainNavActivity extends AppCompatActivity
         
     }
 
-    public void setUpView(){
+    public void setUpView(boolean dataNeeded){
         noNetwork.setVisibility(View.GONE);
         fragmentFrame.setVisibility(View.VISIBLE);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -187,27 +185,47 @@ public class MainNavActivity extends AppCompatActivity
         activeHikesFragment = new ActiveHikesFragment();
 
         mainFragManager = getSupportFragmentManager();
-        mainFragManager.beginTransaction().add(R.id.main_frame, homeFragment).commit();
+        //mainFragManager.beginTransaction().add(R.id.main_frame, homeFragment).commit();
 
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */,
-                        (GoogleApiClient.OnConnectionFailedListener) this /* OnConnectionFailedListener */)
-                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
-                .addApi(LocationServices.API)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .build();
-        googleApiClient.connect();
+        if(dataNeeded) {
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this /* FragmentActivity */,
+                            (GoogleApiClient.OnConnectionFailedListener) this /* OnConnectionFailedListener */)
+                    .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+                    .addApi(LocationServices.API)
+                    .addApi(Places.GEO_DATA_API)
+                    .addApi(Places.PLACE_DETECTION_API)
+                    .build();
+            googleApiClient.connect();
+            Log.d(TAG, "lat data unavailable");
+        }
 
         Log.d(TAG, "APP STARTED");
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         if (googleMap != null) {
             outState.putParcelable(KEY_CAMERA_POSITION, googleMap.getCameraPosition());
             outState.putParcelable(KEY_LOCATION, mLastKnownLocation);
-            super.onSaveInstanceState(outState);
+            outState.putParcelableArray(KEY_LATLNG, mLikelyPlaceLatLngs);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(mainFragManager.findFragmentByTag(HOME_TAG) != null){
+            mainFragManager.findFragmentByTag(HOME_TAG).setRetainInstance(true);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mainFragManager.findFragmentByTag(HOME_TAG) != null) {
+            mainFragManager.findFragmentByTag(HOME_TAG).getRetainInstance();
         }
     }
 
@@ -224,7 +242,6 @@ public class MainNavActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_nav_menu, menu);
-
         return true;
     }
 
@@ -250,13 +267,19 @@ public class MainNavActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            // Handle the camera action
-            if (!(mainFragManager.findFragmentById(R.id.main_frame) instanceof HomeFragment)) {
-                mainFragManager.beginTransaction().replace(R.id.main_frame, homeFragment).commit();
-                homeFragment.onLocationFound(getCityName(mLikelyPlaceLatLngs[0]));
+            Log.d(TAG, "HOME TAB PRESSED");
+            Fragment home = (HomeFragment)mainFragManager.findFragmentByTag(HOME_TAG);
+            if(home == null){
+                home = new HomeFragment(mLikelyPlaceLatLngs[0], googleApiClient);
+                Log.d(TAG, "Fragment is not in back stack");
             }
+            else{
+                Log.d(TAG, "Fragment is in back stack");
+            }
+            mainFragManager.beginTransaction().replace(R.id.main_frame, home).addToBackStack(null).commit();
+
         } else if (id == R.id.nav_discover) {
-            mainFragManager.beginTransaction().replace(R.id.main_frame, new HikrDiscoverFragment()).commit();
+            mainFragManager.beginTransaction().replace(R.id.main_frame, hikerDiaryFragment).commit();
         } else if (id == R.id.nav_active_hikes) {
             mainFragManager.beginTransaction().replace(R.id.main_frame, activeHikesFragment).commit();
         } else if (id == R.id.nav_hikr_diary) {
@@ -287,27 +310,23 @@ public class MainNavActivity extends AppCompatActivity
         return true;
     }
 
-    //TODO: Should showCurrentplace be in onConnected or onMapReady?
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.d(TAG, "MAP CONNECTED");
         showCurrentPlace();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.d(TAG, "MAP CONNECTION SUSPENDED");
+
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "MAP CONNECTION FAILED");
-//        Log.d(TAG, connectionResult.getErrorMessage());
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d(TAG, "onMapReady");
         this.googleMap = googleMap;
         showCurrentPlace();
     }
@@ -334,8 +353,7 @@ public class MainNavActivity extends AppCompatActivity
 
     public void getLocationData(String city, String country){
         String query = city + "%20" + country + "%20hiking%20area";
-        Log.d(TAG, "Query: " + query);
-        new GetLocationData(this, googleApiClient).execute("https://us-central1-hikr-41391.cloudfunctions.net/app/locations/" + query);
+        //new GetLocationData(this, googleApiClient).execute("https://us-central1-hikr-41391.cloudfunctions.net/app/locations/" + query);
     }
     /**
      * Prompts the user to select the current place from a list of likely places, and shows the
@@ -343,12 +361,6 @@ public class MainNavActivity extends AppCompatActivity
      */
     private void showCurrentPlace() {
         Log.d(TAG, "Entered showCUrrentPlace()");
-        if (googleMap == null) {
-            Log.d(TAG, "GoogleMap is null");
-            //return;
-        }
-
-        Log.d(TAG, "GoogleMap is not null");
 
         if (mLocationPermissionGranted) {
             // Get the likely places - that is, the businesses and other points of interest that
@@ -374,8 +386,6 @@ public class MainNavActivity extends AppCompatActivity
                                 mLikelyPlaceAttributions[i] = (String) placeLikelihood.getPlace()
                                         .getAttributions();
                                 mLikelyPlaceLatLngs[i] = placeLikelihood.getPlace().getLatLng();
-                                Log.d(TAG, mLikelyPlaceAddresses[i]);
-
                                 i++;
                                 if (i > (mMaxEntries - 1)) {
                                     break;
@@ -383,8 +393,10 @@ public class MainNavActivity extends AppCompatActivity
                             }
                             // Release the place likelihood buffer, to avoid memory leaks.
                             likelyPlaces.release();
-                            homeFragment.onLocationFound(getCityName(mLikelyPlaceLatLngs[0]));
-                            getLocationData(getCityName(mLikelyPlaceLatLngs[0]), getCountryName(mLikelyPlaceLatLngs[0]));
+                            LatLng a = mLikelyPlaceLatLngs[0];
+                            homeFragment = new HomeFragment(a, googleApiClient);
+                            mainFragManager.beginTransaction().add(R.id.main_frame, homeFragment, HOME_TAG).addToBackStack(null).commit();
+                            latDataAvailable = true;
                         }
                     });
                 }
@@ -398,38 +410,6 @@ public class MainNavActivity extends AppCompatActivity
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
-    }
-
-    private String getCityName(LatLng latLng){
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude,1);
-
-            if (addresses.size() > 0){
-                return addresses.get(0).getLocality(); //+ ", " + addresses.get(0).getAddressLine(1);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    private String getCountryName(LatLng latLng){
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude,1);
-
-            if (addresses.size() > 0) {
-                return addresses.get(0).getCountryName();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     @Override
@@ -472,36 +452,6 @@ public class MainNavActivity extends AppCompatActivity
         }
     }
 
-    private class GetLocationData extends AsyncTask<String, Void, List<HikeLocationData>>{
-
-        List<HikeLocationData> locationDataList;
-        GoogleApiClient googleApiClient;
-        Context context;
-
-        public GetLocationData(Context context, GoogleApiClient googleApiClient) {
-            this.googleApiClient = googleApiClient;
-            this.context = context;
-        }
-
-        @Override
-        protected List<HikeLocationData> doInBackground(String... urls) {
-            String url = urls[0];
-            QueryUtils.Companion.putContext(context);
-            QueryUtils.Companion.setApiClient(googleApiClient);
-            locationDataList = QueryUtils.Companion.getHikeLocations(url);
-            return locationDataList;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected void onPostExecute(List<HikeLocationData> hikeLocationDatas) {
-            homeFragment.populate(hikeLocationDatas);
-        }
-    }
 
 
 }

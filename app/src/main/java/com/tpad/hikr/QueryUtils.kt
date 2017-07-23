@@ -45,7 +45,7 @@ class QueryUtils(url: String) {
         var mGoogleApiClient : GoogleApiClient? = null
         var context : Context? = null
 
-        private val TAG = scratch::class.java.simpleName
+        private val TAG = QueryUtils::class.java.simpleName
 
         fun setApiClient(client : GoogleApiClient) {
             mGoogleApiClient = client
@@ -54,31 +54,26 @@ class QueryUtils(url: String) {
         fun putContext(c : Context) {
             context = c
         }
-        fun createUrl(a : String) : URL {
-            var url : URL? = null
+        fun createUrl(a : String) : URL? {
+            var  url : URL? = null
 
             try {
                 url = URL(a)
+                Log.d(TAG, "url is not null")
             }
             catch (e : Exception){
-                e.printStackTrace()
+                Log.d(TAG, "url is null")
+                Log.d(TAG, "uel error: ${e.toString()}")
             }
-
-            return url!!
+            return url
         }
 
         fun makeHttpRequest(url : URL) : String {
             var jsonResponse = ""
-
-            if (url.toString() == ""){
-                Log.d("URL", "null")
-                return null!!
-            }
-
-            Log.d(TAG, url.toString())
-
             var urlConnection : HttpURLConnection? = null
             var inputStream : InputStream? = null
+
+            Log.d(TAG, url.toString())
 
             try{
                 urlConnection = url.openConnection() as HttpURLConnection
@@ -91,24 +86,26 @@ class QueryUtils(url: String) {
 
                 if(urlConnection.responseCode == 200){
                     inputStream = urlConnection.inputStream
-                    jsonResponse = readFromStream(inputStream)!!
+                    jsonResponse = readFromStream(inputStream)
 
-                    Log.e(TAG, "Error ${urlConnection.responseCode} ${urlConnection.responseMessage}")
+                    Log.d(TAG, "Error ${urlConnection.responseCode} ${urlConnection.responseMessage}")
+                }
+                else{
+                    Log.d(TAG, "Error ${urlConnection.responseCode} ${urlConnection.responseMessage}")
                 }
             }
             catch (e : IOException){
-                Log.e(TAG, "problem retrieving eartchquake results", e)
+                Log.e(TAG, "problem retrieving earthquake results", e)
             }
             finally {
                 if(urlConnection != null) urlConnection.disconnect()
                 if (inputStream != null) inputStream.close()
             }
-
-            return jsonResponse!!
+            return jsonResponse
         }
 
         @Throws(IOException::class)
-        private fun readFromStream(stream : InputStream?) : String? {
+        private fun readFromStream(stream : InputStream?) : String {
             val stringBuilder : StringBuilder = StringBuilder()
 
             if(stream != null){
@@ -126,22 +123,12 @@ class QueryUtils(url: String) {
             else {
                 Log.d(TAG, "input stream is null")
             }
-
             Log.d(TAG, stringBuilder.toString())
             return stringBuilder.toString()
         }
 
         fun extractHikeLocations(json : String?) : ArrayList<HikeLocationData> {
-            if(TextUtils.isEmpty(json)){
-                Log.d(TAG, "isEmpty")
-                return null!!
-            }
-
             val hikeLocationList = ArrayList<HikeLocationData>()
-            val stream = ByteArrayOutputStream()
-
-            val byteArray = stream.toByteArray()
-
 
             try{
                 val root : JSONObject
@@ -150,74 +137,64 @@ class QueryUtils(url: String) {
                     Log.d("json", json)
                     root = JSONObject(json)
                     val results : JSONArray = root.getJSONArray("results")
-
                     val length = results.length()
+                    var i : Int = 0
 
-                    for(i in 0..length-1){
-                        val locationItem = results.getJSONObject(i)
-                        val arrayItem = HikeLocationData()
-                        arrayItem.name = locationItem.getString("name")
-                        arrayItem.address = locationItem.getString("formatted_address")
-                        arrayItem.image = addPhoto(locationItem.getString("place_id"))
-                        arrayItem.rating = locationItem.getDouble("rating")
-                        arrayItem.latitude = locationItem.getJSONObject("geometry").getJSONObject("location").getDouble("lat");
-                        arrayItem.longitude = locationItem.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
-                        arrayItem.city = getCityName(LatLng(arrayItem.latitude, arrayItem.longitude))
-                        hikeLocationList.add(arrayItem)
+                    while (i < length){
+                        try{
+                            Log.d(TAG, i.toString())
+                            val locationItem = results.getJSONObject(i)
+                            val arrayItem = HikeLocationData()
+                            arrayItem.name = locationItem.getString("name")
+                            Log.d(TAG, arrayItem.name)
+                            arrayItem.address = locationItem.getString("formatted_address")
+                            Log.d(TAG, arrayItem.address)
+                            arrayItem.placeId = locationItem.getString("place_id")
+                            Log.d(TAG, "place-id ${locationItem.getString("place_id")}")
+                            arrayItem.rating = locationItem.getDouble("rating")
+                            Log.d(TAG, "rating- ${arrayItem.rating}")
+                            arrayItem.latitude = locationItem.getJSONObject("geometry").getJSONObject("location").getDouble("lat")
+                            arrayItem.longitude = locationItem.getJSONObject("geometry").getJSONObject("location").getDouble("lng")
+                            //arrayItem.city = )
+                            val city = getCityName(LatLng(arrayItem.latitude, arrayItem.longitude))
+                            if(city != null)arrayItem.city = city
+                            else arrayItem.city = ""
+                            i++
+                            hikeLocationList.add(arrayItem)
+                        }
+                        catch(e : JSONException){
+                            Log.d(TAG, e.toString())
+                            i++
+                        }
                     }
+                    Log.d(TAG, "LENGTH - " + i)
                 }
             }
             catch (e : JSONException){
                 Log.d(TAG, e.toString())
             }
-
+            catch (e : Exception){
+                Log.d(TAG, e.toString())
+            }
             return hikeLocationList
         }
 
         fun getHikeLocations(link: String): ArrayList<HikeLocationData> {
-
+            Log.d(TAG, "get hike location called")
             try {
                 Thread.sleep(2000)
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             }
-
-            val url = createUrl(link)
-
-            Log.d("URL", url.toString())
-
+            val url : URL? = createUrl(link)
+            Log.d(TAG, url?.toString())
             var json: String? = null
             try {
-                json = makeHttpRequest(url!!)
-                if (json != null) {
-                    Log.d("json", "not null")
-                }
+                json = url?.let { makeHttpRequest(it) }
             } catch (e: IOException) {
-                Log.d("URL CONNECTION", "IO", e)
+                Log.d(TAG, "IO", e)
             }
-
             return extractHikeLocations(json)
-        }
-
-        public fun addPhoto(placeId : String) : Bitmap? {
-            val result = Places.GeoDataApi
-                    .getPlacePhotos(mGoogleApiClient, placeId).await()
-            var photoMetadataBuffer : PlacePhotoMetadataBuffer?= null
-            // Get a PhotoMetadataBuffer instance containing a list of photos (PhotoMetadata).
-            if (result != null && result.status.isSuccess) {
-                photoMetadataBuffer = result.photoMetadata
-
-                // Get the first photo in the list.
-                val photo = photoMetadataBuffer.get(0)
-                // Get a full-size bitmap for the photo.
-                val image = photo.getPhoto(mGoogleApiClient).await()
-                        .getBitmap()
-                // Get the attribution text.
-                val attribution = photo.getAttributions()
-
-                return image
-            }
-            return null
         }
 
         private fun getCityName(latLng: LatLng): String? {
@@ -225,14 +202,12 @@ class QueryUtils(url: String) {
 
             try {
                 val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-
                 if (addresses.size > 0) {
                     return addresses[0].getAddressLine(1)
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
             return null
         }
     }
