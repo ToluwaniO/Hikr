@@ -65,10 +65,15 @@ class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment
             Log.d(TAG, "savedInstance size ${savedInstanceState.getParcelableArrayList<HikeLocationData>(LOCATION_LIST).size}")
             hikeLocationDataArrayList.copyFrom(savedInstanceState.getParcelableArrayList<HikeLocationData>(LOCATION_LIST))
             Log.d(TAG, "savedInstanced used for list")
+            progressBar.visibility = View.GONE
         }
         if(hikeLocationAdapater.itemCount <= 1) {
             GetLocationData(rootView.context, googleApiClient).execute("https://us-central1-hikr-41391.cloudfunctions.net/app/locations/"+query)
             Log.d(TAG, "dataSet not available")
+        }
+        else{
+            Log.d(TAG, "dataSet available")
+            progressBar.visibility = View.GONE
         }
         return rootView
     }
@@ -76,7 +81,7 @@ class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         Log.d(TAG, "onSavedINSTANCE")
-        outState?.putParcelableArrayList(LOCATION_LIST, hikeLocationDataArrayList);
+        outState?.putParcelableArrayList(LOCATION_LIST, hikeLocationDataArrayList)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -96,6 +101,10 @@ class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment
         }
 
 
+    }
+
+    override fun onPause() {
+        super.onPause()
     }
 
     private fun getCityName(latLng: LatLng): String? {

@@ -48,10 +48,8 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
 
             try {
                 url = URL(a)
-                Log.d(TAG, "url is not null")
             }
             catch (e : Exception){
-                Log.d(TAG, "url is null")
                 Log.d(TAG, "uel error: ${e.toString()}")
             }
             return url
@@ -77,7 +75,7 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
                     inputStream = urlConnection.inputStream
                     jsonResponse = readFromStream(inputStream)
 
-                    Log.d(TAG, "Error ${urlConnection.responseCode} ${urlConnection.responseMessage}")
+                    Log.d(TAG, "SUCCESS ${urlConnection.responseCode} ${urlConnection.responseMessage}")
                 }
                 else{
                     Log.d(TAG, "Error ${urlConnection.responseCode} ${urlConnection.responseMessage}")
@@ -104,7 +102,6 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
                 var line = reader.readLine()
 
                 while(line != null){
-                    Log.d("line", line)
                     stringBuilder.append(line)
                     line = reader.readLine()
                 }
@@ -123,7 +120,6 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
                 val root : JSONObject
 
                 if(json != null){
-                    Log.d("json", json)
                     root = JSONObject(json)
                     val results : JSONArray = root.getJSONArray("results")
                     val length = results.length()
@@ -135,16 +131,11 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
                             val locationItem = results.getJSONObject(i)
                             val arrayItem = HikeLocationData()
                             arrayItem.name = locationItem.getString("name")
-                            Log.d(TAG, arrayItem.name)
                             arrayItem.address = locationItem.getString("formatted_address")
-                            Log.d(TAG, arrayItem.address)
                             arrayItem.placeId = locationItem.getString("place_id")
-                            Log.d(TAG, "place-id ${locationItem.getString("place_id")}")
                             arrayItem.rating = locationItem.getDouble("rating")
-                            Log.d(TAG, "rating- ${arrayItem.rating}")
                             arrayItem.latitude = locationItem.getJSONObject("geometry").getJSONObject("location").getDouble("lat")
                             arrayItem.longitude = locationItem.getJSONObject("geometry").getJSONObject("location").getDouble("lng")
-                            //arrayItem.city = )
                             val city = getCityName(LatLng(arrayItem.latitude, arrayItem.longitude), context)
                             if(city != null)arrayItem.city = city
                             else arrayItem.city = ""
@@ -169,7 +160,6 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
         }
 
         fun getHikeLocations(link: String, locale: String?, country: String?, context: Context): ArrayList<HikeLocationData> {
-            Log.d(TAG, "get hike location called")
             var json: String? = null
 
             var dataLoc: Cursor? = null
@@ -192,7 +182,6 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
             }
             else{
                 Log.d(TAG, "location present in db")
-                Log.d(TAG, "cursor ${dataLoc.toString()} and size: ${dataLoc.count}")
                 val index = dataLoc.getColumnIndex(HikeLocationEntry.COLUMN_LOCATION_JSON)
                 dataLoc.moveToFirst()
                 return extractHikeLocations(dataLoc.getString(index), context)
@@ -232,7 +221,6 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
         }
 
         private fun getLocation(locale: String, country: String, context: Context): Cursor? {
-            //val uri = Uri()
             val projection = arrayOf<String>(HikeLocationEntry._ID, HikeLocationEntry.COLUMN_LOCALE_NAME,
             HikeLocationEntry.COLUMN_COUNTRY_NAME, HikeLocationEntry.COLUMN_LOCATION_JSON)
             val  selection = "${HikeLocationEntry.COLUMN_LOCALE_NAME} =? AND ${HikeLocationEntry.COLUMN_COUNTRY_NAME} = ?"
