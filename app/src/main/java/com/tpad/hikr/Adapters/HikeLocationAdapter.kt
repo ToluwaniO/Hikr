@@ -88,7 +88,7 @@ class HikeLocationAdapater(internal var hikeLocationDataList: ArrayList<HikeLoca
         when (holder.itemViewType) {
 
             LOCATION_TYPE -> { holder.name.text = hikeLocationDataList[position].city
-            Log.d(TAG, hikeLocationDataList[position].toString())}
+                Log.d(TAG, hikeLocationDataList[position].toString())}
             else -> {
                 if(!TextUtils.isEmpty(hikeLocationDataList[position].name)) {
                     Log.d(TAG, "card ${hikeLocationDataList[position].toString()}")

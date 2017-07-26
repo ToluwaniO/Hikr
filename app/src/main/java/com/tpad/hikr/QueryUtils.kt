@@ -222,7 +222,7 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
 
         private fun getLocation(locale: String, country: String, context: Context): Cursor? {
             val projection = arrayOf<String>(HikeLocationEntry._ID, HikeLocationEntry.COLUMN_LOCALE_NAME,
-            HikeLocationEntry.COLUMN_COUNTRY_NAME, HikeLocationEntry.COLUMN_LOCATION_JSON)
+                    HikeLocationEntry.COLUMN_COUNTRY_NAME, HikeLocationEntry.COLUMN_LOCATION_JSON)
             val  selection = "${HikeLocationEntry.COLUMN_LOCALE_NAME} =? AND ${HikeLocationEntry.COLUMN_COUNTRY_NAME} = ?"
             val selectionArgs = arrayOf<String>(locale, country)
             val cursor = context.contentResolver.query(HikeLocationEntry.CONTENT_URI, projection, selection, selectionArgs, null)

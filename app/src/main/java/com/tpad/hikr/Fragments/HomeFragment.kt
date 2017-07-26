@@ -88,7 +88,7 @@ class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment
         super.onActivityCreated(savedInstanceState)
         savedInstanceState?.let { hikeLocationDataArrayList = savedInstanceState.getParcelableArrayList(LOCATION_LIST)
             progressBar.visibility = View.GONE
-        Log.d(TAG, "onSavedInstanceUsed")}
+            Log.d(TAG, "onSavedInstanceUsed")}
     }
 
     private fun setRecyclerView(googleApiClient: GoogleApiClient?) {
