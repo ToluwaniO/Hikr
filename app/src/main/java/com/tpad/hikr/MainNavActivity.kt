@@ -70,7 +70,7 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     //private var mLikelyPlaceAttributions = ArrayList<String>()
     private var mLikelyPlaceLatLngs = ArrayList<LatLng>()
 
-    internal lateinit var mainFragManager: FragmentManager
+    internal val mainFragManager: FragmentManager = supportFragmentManager
     internal var homeFragment: HomeFragment? = null
     internal lateinit var hikrDiaryFragment: HikrDiaryFragment
     internal lateinit var activeHikesFragment: ActiveHikesFragment
@@ -145,7 +145,7 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         hikrDiaryFragment = HikrDiaryFragment()
         activeHikesFragment = ActiveHikesFragment()
 
-        mainFragManager = supportFragmentManager
+        //mainFragManager = supportFragmentManager
 
         Log.d(TAG, "APP STARTED")
     }
@@ -172,9 +172,9 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
     override fun onResume() {
         super.onResume()
-        if (mainFragManager.findFragmentByTag(HOME_TAG) != null) {
-            mainFragManager.findFragmentByTag(HOME_TAG).retainInstance
-        }
+//        if (mainFragManager.findFragmentByTag(HOME_TAG) != null) {
+//            mainFragManager.findFragmentByTag(HOME_TAG).retainInstance
+//        }
     }
 
     override fun onBackPressed() {
@@ -343,6 +343,7 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     private fun checkFragmentWithTagAndDecide(tag: String){
         val fragment = mainFragManager.findFragmentByTag(tag)
         val fragList = mainFragManager.fragments
+        Log.d(TAG, "fraglist size is ${fragList.size}")
         if(fragment == null && fragList.isEmpty()){
             addFragment(tag)
         }

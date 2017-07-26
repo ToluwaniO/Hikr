@@ -167,6 +167,7 @@ class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment
     }
     fun <T> ArrayList<T>.copyFrom(fromList: ArrayList<T>){
         for (i in fromList){
+            Log.d(TAG, i.toString())
             this.add(i)
         }
     }

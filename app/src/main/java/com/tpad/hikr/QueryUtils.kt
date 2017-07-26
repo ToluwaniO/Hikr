@@ -127,7 +127,6 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
 
                     while (i < length){
                         try{
-                            Log.d(TAG, i.toString())
                             val locationItem = results.getJSONObject(i)
                             val arrayItem = HikeLocationData()
                             arrayItem.name = locationItem.getString("name")
@@ -140,6 +139,7 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
                             if(city != null)arrayItem.city = city
                             else arrayItem.city = ""
                             i++
+                            Log.d(TAG, i.toString())
                             hikeLocationList.add(arrayItem)
                         }
                         catch(e : JSONException){

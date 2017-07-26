@@ -54,16 +54,6 @@
             android:textColor="@color/cardview_dark_background"
             tools:text="Gatineau, QC" />
 
-        <TextView
-            android:id="@+id/discover_distance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="2dp"
-            android:paddingBottom="5dp"
-            android:textColor="@color/cardview_dark_background"
-            tools:text="24km" />
-
         <RatingBar
             android:id="@+id/discover_rating_bar"
             style="@style/Base.Widget.AppCompat.RatingBar.Small"

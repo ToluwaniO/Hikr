@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.util.Log
 import android.util.LruCache
 import android.view.LayoutInflater
@@ -43,7 +44,7 @@ class HikeLocationAdapater(internal var hikeLocationDataList: ArrayList<HikeLoca
     inner class MyViewHolder : RecyclerView.ViewHolder {
         internal var name: TextView
         internal lateinit var city: TextView
-        internal lateinit var distance: TextView
+        //internal lateinit var distance: TextView
         internal lateinit var image: ImageView
         internal lateinit var cardView: CardView
         internal lateinit var ratingBar: RatingBar
@@ -54,7 +55,7 @@ class HikeLocationAdapater(internal var hikeLocationDataList: ArrayList<HikeLoca
             cardView = itemView.findViewById(R.id.discover_card) as CardView
             name = itemView.findViewById(R.id.discover_name) as TextView
             city = itemView.findViewById(R.id.discover_city_name) as TextView
-            distance = itemView.findViewById(R.id.discover_distance) as TextView
+            //distance = itemView.findViewById(R.id.discover_distance) as TextView
             image = itemView.findViewById(R.id.dicover_location_image) as ImageView
             ratingBar = itemView.findViewById(R.id.discover_rating_bar) as RatingBar
             loadingBar = itemView.findViewById(R.id.discover_image_loader) as ProgressBar
@@ -86,34 +87,36 @@ class HikeLocationAdapater(internal var hikeLocationDataList: ArrayList<HikeLoca
 
         when (holder.itemViewType) {
 
-            LOCATION_TYPE -> holder.name.text = hikeLocationDataList[position].city
+            LOCATION_TYPE -> { holder.name.text = hikeLocationDataList[position].city
+            Log.d(TAG, hikeLocationDataList[position].toString())}
             else -> {
-                holder.name.text = hikeLocationDataList[position].name
-                holder.city.text = hikeLocationDataList[position].address
-                holder.distance.text = hikeLocationDataList[position].distance.toString()
-                holder.loadingBar.visibility = View.VISIBLE
-                holder.image.visibility = View.GONE
-                val b = getBitmapFromMemCache(hikeLocationDataList[position].placeId)
-                if (b != null) {
-                    Log.d(TAG, "Cache used")
-                    holder.loadingBar.visibility = View.GONE
-                    holder.image.visibility = View.VISIBLE
-                    holder.image.setImageBitmap(b)
-                } else {
-                    PhotoTask(holder.image.maxWidth, holder.image.maxHeight, position, holder).execute(hikeLocationDataList[position].placeId)
-                }
+                if(!TextUtils.isEmpty(hikeLocationDataList[position].name)) {
+                    Log.d(TAG, "card ${hikeLocationDataList[position].toString()}")
+                    holder.name.text = hikeLocationDataList[position].name
+                    holder.city.text = hikeLocationDataList[position].address
+                    //holder.distance.text = hikeLocationDataList[position].distance.toString()
+                    holder.loadingBar.visibility = View.VISIBLE
+                    holder.image.visibility = View.GONE
+                    val b = getBitmapFromMemCache(hikeLocationDataList[position].placeId)
+                    if (b != null) {
+                        holder.loadingBar.visibility = View.GONE
+                        holder.image.visibility = View.VISIBLE
+                        holder.image.setImageBitmap(b)
+                    } else {
+                        PhotoTask(holder.image.maxWidth, holder.image.maxHeight, position, holder).execute(hikeLocationDataList[position].placeId)
+                    }
 
-                //holder.image.setImageBitmap(hikeLocationDataList.get(position).getImage());
-                holder.ratingBar.max = 5
-                holder.ratingBar.rating = hikeLocationDataList[position].rating.toFloat()
+                    holder.ratingBar.max = 5
+                    holder.ratingBar.rating = hikeLocationDataList[position].rating.toFloat()
 
-                holder.cardView.setOnClickListener {
-                    val intent = Intent(context, HikeLocationActivity::class.java)
-                    val bundle = Bundle()
-                    bundle.putParcelable(HikeLocationData::class.java.simpleName, hikeLocationDataList[position])
-                    //intent.putExtra("image", hikeLocationDataList.get(position).getImage());
-                    intent.putExtras(bundle)
-                    context.startActivity(intent)
+                    holder.cardView.setOnClickListener {
+                        val intent = Intent(context, HikeLocationActivity::class.java)
+                        val bundle = Bundle()
+                        bundle.putParcelable(HikeLocationData::class.java.simpleName, hikeLocationDataList[position])
+                        //intent.putExtra("image", hikeLocationDataList.get(position).getImage());
+                        intent.putExtras(bundle)
+                        context.startActivity(intent)
+                    }
                 }
             }
         }
