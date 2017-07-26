@@ -27,13 +27,13 @@ public class HikrDiscoverFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.hikr_discover_fragment, container, false);
         list = new ArrayList<>();
-        for(int i = 0; i < 10; i++){
-            discoverHikrAdapter.add(new DiscoverItem());
-        }
-        cardStack = (CardStack)view.findViewById(R.id.container);
-        cardStack.setContentResource(R.layout.discover_card);
-        discoverHikrAdapter = new DiscoverHikrAdapter(getContext(), R.layout.discover_card,list);
-        cardStack.setAdapter(discoverHikrAdapter);
+//        for(int i = 0; i < 10; i++){
+//            discoverHikrAdapter.add(new DiscoverItem());
+//        }
+//        cardStack = (CardStack)view.findViewById(R.id.container);
+//        cardStack.setContentResource(R.layout.discover_card);
+//        discoverHikrAdapter = new DiscoverHikrAdapter(getContext(), R.layout.discover_card,list);
+//        cardStack.setAdapter(discoverHikrAdapter);
         return view;
     }
 }

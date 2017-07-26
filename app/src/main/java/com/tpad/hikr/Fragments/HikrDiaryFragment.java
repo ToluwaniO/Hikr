@@ -13,7 +13,7 @@ import com.tpad.hikr.R;
  * Created by toluw on 6/15/2017.
  */
 
-public class HikerDiaryFragment extends Fragment {
+public class HikrDiaryFragment extends Fragment {
 
     @Nullable
     @Override

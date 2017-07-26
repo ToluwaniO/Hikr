@@ -30,6 +30,7 @@ import java.util.Arrays;
 public class SplashActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private static final String TAG = SplashActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 123;
     static final int delayLength = 3000;
     CoordinatorLayout coordinatorLayout;
@@ -59,9 +60,6 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }, delayLength);
         }
-
-
-
     }
 
     @Override
@@ -73,39 +71,42 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult called");
         // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow.
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-
-            // Successfully signed in
-            if (resultCode == ResultCodes.OK) {
-                Intent intent = new Intent(SplashActivity.this, MainNavActivity.class);
-                startActivity(intent);
-                finish();
-               // Log.d(TAG, "succesful");
-                return;
-            } else {
-                // Sign in failed
-                if (response == null) {
-                    // User pressed back button
-                    signIn();
-                    showSnackbar(R.string.sign_in_cancelled);
+        try {
+            if (requestCode == RC_SIGN_IN) {
+                IdpResponse response = IdpResponse.fromResultIntent(data);
+                // Successfully signed in
+                if (resultCode == ResultCodes.OK) {
+                    Intent intent = new Intent(SplashActivity.this, MainNavActivity.class);
+                    startActivity(intent);
                     return;
+                } else {
+                    // Sign in failed
+                    if (response == null) {
+                        // User pressed back button
+                        signIn();
+                        showSnackbar(R.string.sign_in_cancelled);
+                        return;
+                    }
+
+                    if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+                        showSnackbar(R.string.no_internet_connection);
+                        finish();
+                        return;
+                    }
+
+                    if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                        signIn();
+                        showSnackbar(R.string.unknown_error);
+                        return;
+                    }
                 }
 
-                if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    showSnackbar(R.string.no_internet_connection);
-                    finish();
-                    return;
-                }
-
-                if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                    signIn();
-                    showSnackbar(R.string.unknown_error);
-                    return;
-                }
             }
-
+        }
+        catch (Exception e){
+            Log.d(TAG, e.getMessage());
         }
     }
 
