@@ -364,7 +364,7 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
     private fun addFragment(tag: String){
         if(tag == HOME_TAG)
-            mainFragManager.beginTransaction().add(R.id.main_frame, HomeFragment(mLikelyPlaceLatLngs[0], googleApiClient), tag).addToBackStack(null).commit()
+            mainFragManager.beginTransaction().add(R.id.main_frame, HomeFragment(mLikelyPlaceLatLngs[0], mLikelyPlaceAddresses[0], googleApiClient), tag).addToBackStack(null).commit()
         else if(tag == DISCOVER_TAG)
             mainFragManager.beginTransaction().add(R.id.main_frame, HikrDiscoverFragment(), tag).addToBackStack(tag).addToBackStack(null).commit()
         else if(tag == DIARY_TAG)
@@ -382,7 +382,7 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         val fragment = mainFragManager.findFragmentByTag(tag)
         if(fragment == null) {
             if (tag == HOME_TAG)
-                mainFragManager.beginTransaction().replace(R.id.main_frame, HomeFragment(mLikelyPlaceLatLngs[0], googleApiClient), tag).addToBackStack(null).commit()
+                mainFragManager.beginTransaction().replace(R.id.main_frame, HomeFragment(mLikelyPlaceLatLngs[0], mLikelyPlaceAddresses[0], googleApiClient), tag).addToBackStack(null).commit()
             else if (tag == DISCOVER_TAG)
                 mainFragManager.beginTransaction().replace(R.id.main_frame, HikrDiscoverFragment(), tag).addToBackStack(null).commit()
             else if (tag == DIARY_TAG)

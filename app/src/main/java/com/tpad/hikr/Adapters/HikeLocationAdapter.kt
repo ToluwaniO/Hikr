@@ -2,17 +2,13 @@ package com.tpad.hikr.Adapters
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.os.Bundle
-import android.os.Environment
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.Log
-import android.util.LruCache
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,14 +16,12 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.RatingBar
 import android.widget.TextView
-import com.bumptech.glide.disklrucache.DiskLruCache
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.places.Places
 import com.tpad.hikr.DataClasses.HikeLocationData
 import com.tpad.hikr.HikeLocationActivity
 import com.tpad.hikr.R
 import org.afinal.simplecache.ACache
-import java.io.File
 import java.util.ArrayList
 
 /**
@@ -75,7 +69,7 @@ class HikeLocationAdapater(internal var hikeLocationDataList: ArrayList<HikeLoca
                 view = LayoutInflater.from(parent.context).inflate(R.layout.current_location_layout, parent, false)
                 return MyViewHolder(view, 1)
             }
-            else -> view = LayoutInflater.from(parent.context).inflate(R.layout.discover_card, parent, false)
+            else -> view = LayoutInflater.from(parent.context).inflate(R.layout.location_card, parent, false)
         }
 
         return MyViewHolder(view)

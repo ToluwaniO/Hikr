@@ -123,6 +123,7 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
                     root = JSONObject(json)
                     val results : JSONArray = root.getJSONArray("results")
                     val length = results.length()
+                    Log.d(TAG, "ORIGINAL LENGTH - $length")
                     var i : Int = 0
 
                     while (i < length){
@@ -147,7 +148,7 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
                             i++
                         }
                     }
-                    Log.d(TAG, "LENGTH - " + i)
+                    Log.d(TAG, "LENGTH - ${hikeLocationList.size}")
                 }
             }
             catch (e : JSONException){

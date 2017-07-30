@@ -31,8 +31,8 @@ public class HikrDiscoverFragment extends Fragment {
 //            discoverHikrAdapter.add(new DiscoverItem());
 //        }
 //        cardStack = (CardStack)view.findViewById(R.id.container);
-//        cardStack.setContentResource(R.layout.discover_card);
-//        discoverHikrAdapter = new DiscoverHikrAdapter(getContext(), R.layout.discover_card,list);
+//        cardStack.setContentResource(R.layout.location_card);
+//        discoverHikrAdapter = new DiscoverHikrAdapter(getContext(), R.layout.location_card,list);
 //        cardStack.setAdapter(discoverHikrAdapter);
         return view;
     }
