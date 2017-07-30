@@ -28,7 +28,7 @@ import java.util.ArrayList
 /**
  * Created by oguns on 7/20/2017.
  */
-class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment() {
+class HomeFragment(latLng: LatLng, address: String, googleApiClient: GoogleApiClient?) : Fragment() {
 
     internal lateinit var recyclerView: RecyclerView
     internal lateinit var progressBar: ProgressBar
@@ -36,15 +36,17 @@ class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment
     internal lateinit var hikeLocationAdapater: HikeLocationAdapater
     internal var location: String? = null
     internal var latLng: LatLng
+    internal var address: String
     internal var googleApiClient : GoogleApiClient?
     internal lateinit var rootView: View
     internal val LOCATION_LIST = "location_list"
     var dataSet = false
 
-    constructor():this(LatLng(0.0,0.0), null)
+    constructor():this(LatLng(0.0,0.0), "", null)
 
     init {
         this.latLng = latLng
+        this.address = address
         this.googleApiClient = googleApiClient
     }
 
@@ -59,7 +61,7 @@ class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment
 
         location = getCityName(latLng) +  ", " + getCountryName(latLng)
         Log.d(TAG, "onCreateView")
-        val query = getCityName(latLng) + "%20" + getCountryName(latLng) + "hiking%20area"
+        val query = "hiking%20area%20near%20" + getCityName(latLng) + "%20" + getCountryName(latLng)
         Log.d(TAG, query)
         if (savedInstanceState != null){
             Log.d(TAG, "savedInstance size ${savedInstanceState.getParcelableArrayList<HikeLocationData>(LOCATION_LIST).size}")
@@ -108,19 +110,26 @@ class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment
     }
 
     private fun getCityName(latLng: LatLng): String? {
-        val geocoder = Geocoder(rootView.context, Locale.getDefault())
+        var geocoder = Geocoder(rootView.context, Locale.getDefault())
 
         try {
-            val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-            Log.d(TAG, addresses.toString())
+            var addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
 
             if (addresses.size > 0) {
-                return addresses[0].locality //+ ", " + addresses.get(0).getAddressLine(1);
+                if(addresses[0].locality == null){
+                    return getCityFromAddress(address)
+                }
+                else{
+                    Log.d(TAG, "Address is not null ${addresses.toString()}")
+                }
+                return addresses[0].locality
+            }
+            else{
+                return getCityFromAddress(address)
             }
         } catch (e: IOException) {
             Log.d(TAG, "error: ${e.toString()}")
         }
-
         return null
     }
 
@@ -140,13 +149,30 @@ class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment
         return null
     }
 
+    private fun getCityFromAddress(address: String): String? {
+        Log.d(TAG, "get city name from address - $address")
+        var list: List<String>? = null
+        if(address.contains(','))
+        {
+            list = address.split(",")
+            Log.d(TAG, ", is present $list")
+        }
+
+        if(list != null && list.size >= 2){
+            Log.d(TAG, ", is not present $list")
+            return list[1]
+        }
+        return null
+    }
+
     private inner class GetLocationData(internal var context: Context, internal val googleApiClient: GoogleApiClient?) : AsyncTask<String, Void, ArrayList<HikeLocationData>>() {
 
         internal var locDataList: ArrayList<HikeLocationData> = ArrayList()
 
         override fun doInBackground(vararg urls: String): ArrayList<HikeLocationData> {
             Log.d(TAG, "doInBackground() called")
-            val url = urls[0]
+            val url = urls[0].replace(" ","%20")
+            Log.d(TAG, "Async $url")
             googleApiClient?.let { QueryUtils.setApiClient(googleApiClient) }
             locDataList = QueryUtils.getHikeLocations(url, getCityName(latLng), getCountryName(latLng), context)
             return locDataList
@@ -165,6 +191,7 @@ class HomeFragment(latLng: LatLng, googleApiClient: GoogleApiClient?) : Fragment
             progressBar.visibility = View.GONE
         }
     }
+
     fun <T> ArrayList<T>.copyFrom(fromList: ArrayList<T>){
         for (i in fromList){
             Log.d(TAG, i.toString())

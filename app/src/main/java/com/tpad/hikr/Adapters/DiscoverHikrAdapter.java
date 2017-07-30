@@ -13,7 +13,6 @@ import com.tpad.hikr.DataClasses.DiscoverItem;
 import com.tpad.hikr.R;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 /**
  * Created by oguns on 7/16/2017.
@@ -34,6 +33,6 @@ public class DiscoverHikrAdapter extends ArrayAdapter {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-         return LayoutInflater.from(parent.getContext()).inflate(R.layout.discover_card, null);
+         return LayoutInflater.from(parent.getContext()).inflate(R.layout.location_card, null);
     }
 }
