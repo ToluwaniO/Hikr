@@ -29,6 +29,10 @@
 
     <!-- HikeLocationActivity text -->
     <string name="start_hike_button">Start Hike</string>
+    <string name="next_review_pager">Submit</string>
+
+    <!-- ReviewFragment -->
+    <string name="write_review">Write review</string>
 
 
 </resources>
