@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
@@ -117,8 +118,9 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         if (isConnected) {
             setUpView()
         } else {
-            fragmentFrame.visibility = View.GONE
-            noNetwork.visibility = View.VISIBLE
+            //fragmentFrame.visibility = View.GONE
+            //noNetwork.visibility = View.VISIBLE
+            showSnackBar()
         }
         googleApiClient = GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */,
@@ -418,6 +420,11 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
     }
 
+    fun showSnackBar(){
+        val cLayout = findViewById(R.id.snackbar_layout) as CoordinatorLayout
+        val snackbar = Snackbar.make(cLayout, getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG)
+        snackbar.show()
+    }
 
     companion object {
         private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
@@ -432,6 +439,4 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         private val ACTIVE_TAG = "active"
         private val RC_SIGN_IN = 9949
     }
-
-
 }
