@@ -19,9 +19,8 @@
             android:icon="@drawable/ic_journal"
             android:title="Hikr Diary" />
     </group>
-
-    <item >
-        <menu>
+    <item android:title="Others">
+        <menu >
             <item
                 android:id="@+id/action_settings"
                 android:title="Settings"
