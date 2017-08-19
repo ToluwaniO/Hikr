@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
@@ -46,6 +47,7 @@ import java.util.*
 class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private val TAG = MainNavActivity::class.java.simpleName
+    internal lateinit var rootLayout: LinearLayout
     internal lateinit var noNetwork: LinearLayout
     internal lateinit var fragmentFrame: FrameLayout
 
@@ -67,7 +69,6 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     private val mMaxEntries = 5
     private var mLikelyPlaceNames = ArrayList<String>()
     private var mLikelyPlaceAddresses = ArrayList<String>()
-    //private var mLikelyPlaceAttributions = ArrayList<String>()
     private var mLikelyPlaceLatLngs = ArrayList<LatLng>()
 
     internal val mainFragManager: FragmentManager = supportFragmentManager
@@ -86,7 +87,7 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         setContentView(R.layout.activity_main_nav)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
-        noNetwork = findViewById(R.id.no_network_layout) as LinearLayout
+        rootLayout = findViewById(R.id.root) as LinearLayout
         fragmentFrame = findViewById(R.id.main_frame) as FrameLayout
 
         val fab = findViewById(R.id.fab) as FloatingActionButton
@@ -101,12 +102,6 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         drawer.setDrawerListener(toggle)
         toggle.syncState()
 
-        noNetwork.setOnClickListener {
-            if (isConnected) {
-                setUpView()
-            }
-        }
-
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable<Location>(KEY_LOCATION)
             mCameraPosition = savedInstanceState.getParcelable<CameraPosition>(KEY_CAMERA_POSITION)
@@ -116,23 +111,21 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
         if (isConnected) {
             setUpView()
+            googleApiClient = GoogleApiClient.Builder(this)
+                    .enableAutoManage(this /* FragmentActivity */,
+                            this as GoogleApiClient.OnConnectionFailedListener /* OnConnectionFailedListener */)
+                    .addConnectionCallbacks(this as GoogleApiClient.ConnectionCallbacks)
+                    .addApi(LocationServices.API)
+                    .addApi(Places.GEO_DATA_API)
+                    .addApi(Places.PLACE_DETECTION_API)
+                    .build()
+            googleApiClient.connect()
         } else {
-            fragmentFrame.visibility = View.GONE
-            noNetwork.visibility = View.VISIBLE
+            showSnackBar()
         }
-        googleApiClient = GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */,
-                        this as GoogleApiClient.OnConnectionFailedListener /* OnConnectionFailedListener */)
-                .addConnectionCallbacks(this as GoogleApiClient.ConnectionCallbacks)
-                .addApi(LocationServices.API)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .build()
-        googleApiClient.connect()
     }
 
     fun setUpView() {
-        noNetwork.visibility = View.GONE
         fragmentFrame.visibility = View.VISIBLE
         val navigationView = findViewById(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
@@ -172,9 +165,6 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
     override fun onResume() {
         super.onResume()
-//        if (mainFragManager.findFragmentByTag(HOME_TAG) != null) {
-//            mainFragManager.findFragmentByTag(HOME_TAG).retainInstance
-//        }
     }
 
     override fun onBackPressed() {
@@ -187,7 +177,6 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-       // menuInflater.inflate(R.menu.main_nav_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -233,7 +222,6 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                         RC_SIGN_IN)
 
             }
-            //finish()
         }
 
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
@@ -329,8 +317,6 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         if (requestCode == RC_SIGN_IN) {
             // Successfully signed in
             if (resultCode == ResultCodes.OK) {
-                //Intent intent = new Intent(SplashActivity.this, MainNavActivity.class);
-                //startActivity(intent);
                 Toast.makeText(this, "Sign in succesful", Toast.LENGTH_LONG).show()
                 return
             } else {
@@ -376,9 +362,6 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     }
 
     private fun replaceFragment(tag: String){
-        //val count = mainFragManager.backStackEntryCount
-        //val oldTag = mainFragManager.getBackStackEntryAt(count-1).name
-        val oldFrag = getFragment()
         val fragment = mainFragManager.findFragmentByTag(tag)
         if(fragment == null) {
             if (tag == HOME_TAG)
@@ -418,6 +401,10 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
     }
 
+    fun showSnackBar(){
+        val snackbar = Snackbar.make(rootLayout, getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG)
+        snackbar.show()
+    }
 
     companion object {
         private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
@@ -432,6 +419,4 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         private val ACTIVE_TAG = "active"
         private val RC_SIGN_IN = 9949
     }
-
-
 }
