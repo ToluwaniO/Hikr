@@ -27,5 +27,15 @@
     <string name="no_network">Ooops, looks like you don\'t have internet connection</string>
     <string name="try_again">Try Again</string>
 
+    <!-- HikeLocationActivity text -->
+    <string name="start_hike_button">Start Hike</string>
+    <string name="next_review_pager">Submit</string>
+
+    <!-- Review Fragment -->
+    <string name="write_review">Write review</string>
+    <string name="review_view">How was this trail?</string>
+    <string name="rating_view">Was it a five?!</string>
+    <string name="submit_review">Submit</string>
+
 
 </resources>

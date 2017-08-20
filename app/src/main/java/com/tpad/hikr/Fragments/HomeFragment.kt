@@ -18,6 +18,7 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.maps.model.LatLng
 import com.tpad.hikr.Adapters.HikeLocationAdapater
 import com.tpad.hikr.DataClasses.HikeLocationData
+import com.tpad.hikr.QueryAddress
 import com.tpad.hikr.QueryUtils
 import com.tpad.hikr.R
 import org.afinal.simplecache.ACache
@@ -34,6 +35,8 @@ class HomeFragment(latLng: LatLng, address: String, googleApiClient: GoogleApiCl
     internal lateinit var progressBar: ProgressBar
     internal var hikeLocationDataArrayList: ArrayList<HikeLocationData> = ArrayList( )
     internal lateinit var hikeLocationAdapater: HikeLocationAdapater
+    internal var city: String? = null
+    internal var country: String? = null
     internal var location: String? = null
     internal var latLng: LatLng
     internal var address: String
@@ -57,12 +60,21 @@ class HomeFragment(latLng: LatLng, address: String, googleApiClient: GoogleApiCl
         progressBar = rootView.findViewById(R.id.home_progressbar) as ProgressBar
         recyclerView = rootView.findViewById(R.id.discover_recycler) as RecyclerView
 
+        if(QueryAddress.getCityFromLatLng(latLng, rootView.context) == null)
+        {
+            city = QueryAddress.getCityFromAddress(address)
+            country = QueryAddress.getCountryName(latLng, rootView.context)
+
+        } else{
+            city = QueryAddress.getCityFromLatLng(latLng, rootView.context)
+            country = QueryAddress.getCountryName(latLng, rootView.context)
+        }
         setRecyclerView(googleApiClient)
 
-        location = getCityName(latLng) +  ", " + getCountryName(latLng)
-        Log.d(TAG, "onCreateView")
-        val query = "hiking%20area%20near%20" + getCityName(latLng) + "%20" + getCountryName(latLng)
+        location = city +  ", " + country
+        val query = "hiking%20area%20near%20$city%20$country"
         Log.d(TAG, query)
+
         if (savedInstanceState != null){
             Log.d(TAG, "savedInstance size ${savedInstanceState.getParcelableArrayList<HikeLocationData>(LOCATION_LIST).size}")
             hikeLocationDataArrayList.copyFrom(savedInstanceState.getParcelableArrayList<HikeLocationData>(LOCATION_LIST))
@@ -99,70 +111,12 @@ class HomeFragment(latLng: LatLng, address: String, googleApiClient: GoogleApiCl
             recyclerView.layoutManager = layoutManager
             recyclerView.itemAnimator = DefaultItemAnimator()
             recyclerView.adapter = hikeLocationAdapater
-            hikeLocationDataArrayList.add(HikeLocationData(getCityName(latLng) + ", " + getCountryName(latLng)))
+            hikeLocationDataArrayList.add(HikeLocationData(city + ", " + country))
         }
-
-
     }
 
     override fun onPause() {
         super.onPause()
-    }
-
-    private fun getCityName(latLng: LatLng): String? {
-        var geocoder = Geocoder(rootView.context, Locale.getDefault())
-
-        try {
-            var addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-
-            if (addresses.size > 0) {
-                if(addresses[0].locality == null){
-                    return getCityFromAddress(address)
-                }
-                else{
-                    Log.d(TAG, "Address is not null ${addresses.toString()}")
-                }
-                return addresses[0].locality
-            }
-            else{
-                return getCityFromAddress(address)
-            }
-        } catch (e: IOException) {
-            Log.d(TAG, "error: ${e.toString()}")
-        }
-        return null
-    }
-
-    private fun getCountryName(latLng: LatLng): String? {
-        val geocoder = Geocoder(rootView.context, Locale.getDefault())
-
-        try {
-            val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-
-            if (addresses.size > 0) {
-                return addresses[0].countryName
-            }
-        } catch (e: IOException) {
-            Log.d(TAG, "error: ${e.toString()}")
-        }
-
-        return null
-    }
-
-    private fun getCityFromAddress(address: String): String? {
-        Log.d(TAG, "get city name from address - $address")
-        var list: List<String>? = null
-        if(address.contains(','))
-        {
-            list = address.split(",")
-            Log.d(TAG, ", is present $list")
-        }
-
-        if(list != null && list.size >= 2){
-            Log.d(TAG, ", is not present $list")
-            return list[1]
-        }
-        return null
     }
 
     private inner class GetLocationData(internal var context: Context, internal val googleApiClient: GoogleApiClient?) : AsyncTask<String, Void, ArrayList<HikeLocationData>>() {
@@ -174,7 +128,7 @@ class HomeFragment(latLng: LatLng, address: String, googleApiClient: GoogleApiCl
             val url = urls[0].replace(" ","%20")
             Log.d(TAG, "Async $url")
             googleApiClient?.let { QueryUtils.setApiClient(googleApiClient) }
-            locDataList = QueryUtils.getHikeLocations(url, getCityName(latLng), getCountryName(latLng), context)
+            locDataList = QueryUtils.getHikeLocations(url, city, country, context)
             return locDataList
         }
 
