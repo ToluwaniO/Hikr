@@ -1,20 +1,14 @@
 package com.tpad.hikr;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,13 +18,9 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tpad.hikr.DataClasses.HikeLocationData;
-import com.tpad.hikr.Fragments.RatingFragment;
-import com.tpad.hikr.Fragments.ReviewFragment;
 import com.tpad.hikr.databinding.ActivityHikeLocationBinding;
 
-import java.util.ArrayList;
-
-public class HikeLocationActivity extends AppCompatActivity implements OnMapReadyCallback, RatingFragment.onRatingChangedListener, ReviewFragment.onTextChangeListener {
+public class HikeLocationActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     MapFragment mapFragment;
     Boolean mapReady = false;
@@ -38,10 +28,6 @@ public class HikeLocationActivity extends AppCompatActivity implements OnMapRead
     HikeLocationData hikeLocationData;
     ActivityHikeLocationBinding binder;
     MyHandlers handlers;
-    ViewPager viewPager;
-    PagerAdapter pagerAdapter;
-    float rating;
-    String review;
 
     private static final String TAG = HikeLocationActivity.class.getSimpleName();
     @Override
@@ -58,11 +44,16 @@ public class HikeLocationActivity extends AppCompatActivity implements OnMapRead
         actionBar.setTitle("");
 
         ImageView locationView = (ImageView)findViewById(R.id.discover_item_image);
-        viewPager = (ViewPager)findViewById(R.id.viewPager);
-        pagerAdapter = new ReviewAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(pagerAdapter);
 
         hikeLocationData = (HikeLocationData) getIntent().getParcelableExtra(HikeLocationData.class.getSimpleName());
+        LatLng latLng = new LatLng(hikeLocationData.getLatitude(), hikeLocationData.getLongitude());
+        if(QueryAddress.Companion.getCityFromLatLng(latLng, this) == null)
+        {
+            hikeLocationData.setCity(QueryAddress.Companion.getCityFromAddress(hikeLocationData.getAddress()));
+        }
+        else{
+            hikeLocationData.setCity(QueryAddress.Companion.getCityFromLatLng(latLng, this));
+        }
         binder.setLData(hikeLocationData);
         binder.setHandlers(handlers);
         locationView.setImageBitmap(PictureCache.Companion.getPicture(hikeLocationData.getPlaceId(), this));
@@ -82,35 +73,7 @@ public class HikeLocationActivity extends AppCompatActivity implements OnMapRead
         m_map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
     }
 
-    @Override
-    public void onRatingChanged(float value) {
-        rating = value;
-    }
+    public static void getU(){
 
-    @Override
-    public void onTextChanged(String review) {
-        this.review = review;
-    }
-
-    private class ReviewAdapter extends FragmentStatePagerAdapter{
-
-        ArrayList<Fragment> fragments;
-
-        public ReviewAdapter(FragmentManager fm) {
-            super(fm);
-            fragments = new ArrayList<>();
-            fragments.add(new RatingFragment());
-            fragments.add(new ReviewFragment());
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return fragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return fragments.size();
-        }
     }
 }

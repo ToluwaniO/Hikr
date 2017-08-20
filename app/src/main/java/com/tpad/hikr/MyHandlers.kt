@@ -5,6 +5,7 @@ package com.tpad.hikr
  */
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.support.v4.app.FragmentManager
 import android.util.Log
 import android.view.View
@@ -27,15 +28,17 @@ class MyHandlers {
     fun onStartHikingClick(view: View, placeId: String) {
         val datePickerDialog = DatePickerFragment()
 
-//        val activity = view.context as Activity
-//        val manager: FragmentManager = activity.fragmentManager
-//        datePickerDialog.show(, "")
         user?.let { databaseReference.child("$ACTIVE_HIKES_REFERENCE/${user.uid}").push().setValue(
                 ActiveHikesData(placeId, null, "${datePickerDialog.day}:${datePickerDialog.month}:${datePickerDialog.year}")) }
         Log.d(TAG, "onStartHikingClick")
     }
 
     companion object {
+
+        fun onSubmitReviewClicked(view: View){
+            val intent = Intent(view.context, ReviewActivity::class.java)
+            view.context.startActivity(intent)
+        }
 
         private val TAG = MyHandlers::class.java.simpleName
         private val ACTIVE_HIKES_REFERENCE = "ActiveHikes"

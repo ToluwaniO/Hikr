@@ -62,7 +62,8 @@
             android:authorities="com.tpad.hikr"
             android:exported="false" />
 
-        <activity android:name=".ReviewActivity"></activity>
+        <activity android:name=".ReviewActivity">
+        </activity>
     </application>
 
 </manifest>

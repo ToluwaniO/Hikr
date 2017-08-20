@@ -31,8 +31,11 @@
     <string name="start_hike_button">Start Hike</string>
     <string name="next_review_pager">Submit</string>
 
-    <!-- ReviewFragment -->
+    <!-- Review Fragment -->
     <string name="write_review">Write review</string>
+    <string name="review_view">How was this trail?</string>
+    <string name="rating_view">Was it a five?!</string>
+    <string name="submit_review">Submit</string>
 
 
 </resources>

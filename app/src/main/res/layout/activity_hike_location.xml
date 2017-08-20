@@ -38,18 +38,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
+                    android:capitalize="characters"
                     android:text="@{lData.name}"
-                    tools:text="BREEZEWAY TRAIL"
                     android:textColor="@color/com_facebook_button_background_color_focused_disabled"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="BREEZEWAY TRAIL" />
 
                 <TextView
-                    android:id="@+id/discover_item_city"
+                    android:id="@+id/discover_item_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:text="@{lData.city}"
+                    android:text="@{lData.address}"
                     tools:text="Hamilton, ON"
                     android:textColor="@color/com_facebook_button_background_color_focused_disabled" />
 
@@ -157,7 +158,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -206,30 +208,6 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#eeeeee">
-
-                    <android.support.v4.view.ViewPager
-                        android:id="@+id/viewPager"
-                        android:layout_width="wrap_content"
-                        android:layout_height="80dp"
-                        android:layout_margin="5dp" />
-
-                    <Button
-                        android:id="@+id/discover_item_submit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:background="@color/transparent"
-                        android:elevation="2dp"
-                        android:text="@string/next_review_pager" />
-
-                </LinearLayout>
-
                 <Button
                     android:id="@+id/dicover_item_leave_review"
                     style="@style/Widget.AppCompat.Button.Borderless"
@@ -237,6 +215,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:background="@color/cardview_light_background"
+                    android:onClick="@{(v) -> handlers.Companion.onSubmitReviewClicked(v)}"
                     android:text="Enjoyed this trail? Leave a review"
                     android:textAllCaps="false"
                     android:textColor="@color/colorAccent" />
