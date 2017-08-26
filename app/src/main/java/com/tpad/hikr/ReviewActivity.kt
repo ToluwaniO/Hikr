@@ -14,6 +14,7 @@ class ReviewActivity : AppCompatActivity(), ReviewFragment.ReviewListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_review)
+        supportActionBar?.hide()
     }
     override fun onSubmitClicked(review: String, rating: Float) {
         Log.d(TAG, review)

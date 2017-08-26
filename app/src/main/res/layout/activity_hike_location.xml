@@ -40,8 +40,8 @@
                     android:layout_margin="5dp"
                     android:capitalize="characters"
                     android:text="@{lData.name}"
-                    android:textColor="@color/com_facebook_button_background_color_focused_disabled"
-                    android:textSize="18sp"
+                    android:textColor="@color/colorSecondaryText"
+                    android:textSize="24sp"
                     android:textStyle="bold"
                     tools:text="BREEZEWAY TRAIL" />
 
@@ -51,8 +51,9 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:text="@{lData.address}"
-                    tools:text="Hamilton, ON"
-                    android:textColor="@color/com_facebook_button_background_color_focused_disabled" />
+                    android:textColor="@color/com_facebook_button_background_color_focused_disabled"
+                    android:textSize="16sp"
+                    tools:text="Hamilton, ON" />
 
                 <TextView
                     android:id="@+id/discover_item_distance"
@@ -218,7 +219,7 @@
                     android:onClick="@{(v) -> handlers.Companion.onSubmitReviewClicked(v)}"
                     android:text="Enjoyed this trail? Leave a review"
                     android:textAllCaps="false"
-                    android:textColor="@color/colorAccent" />
+                    android:textColor="@color/colorPrimary" />
 
                 <ImageView
                     android:id="@+id/discover_item_divider_three"
@@ -226,6 +227,7 @@
                     android:layout_height="1dp"
                     android:layout_margin="5dp"
                     android:background="@color/cardview_shadow_start_color"
+                    android:visibility="invisible"
                     app:srcCompat="?attr/dividerHorizontal" />
 
                 <TextView
@@ -233,64 +235,53 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:text="7 day forecast"
-                    android:textStyle="bold" />
+                    android:text="5 day forecast"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:id="@+id/discover_item_forecast_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <ImageView
-                        android:id="@+id/imageView11"
+                        android:id="@+id/weather_day_one"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         app:srcCompat="@drawable/ic_wb_cloudy_black_24dp" />
 
                     <ImageView
-                        android:id="@+id/imageView10"
+                        android:id="@+id/weather_day_two"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         app:srcCompat="@drawable/ic_wb_cloudy_black_24dp" />
 
                     <ImageView
-                        android:id="@+id/imageView9"
+                        android:id="@+id/weather_day_three"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         app:srcCompat="@drawable/ic_wb_cloudy_black_24dp" />
 
                     <ImageView
-                        android:id="@+id/imageView8"
+                        android:id="@+id/weather_day_four"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         app:srcCompat="@drawable/ic_wb_cloudy_black_24dp" />
 
                     <ImageView
-                        android:id="@+id/imageView7"
+                        android:id="@+id/weather_day_five"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         app:srcCompat="@drawable/ic_wb_cloudy_black_24dp" />
 
-                    <ImageView
-                        android:id="@+id/imageView6"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        app:srcCompat="@drawable/ic_wb_cloudy_black_24dp" />
-
-                    <ImageView
-                        android:id="@+id/imageView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        app:srcCompat="@drawable/ic_wb_cloudy_black_24dp" />
                 </LinearLayout>
 
                 <ImageView
@@ -310,7 +301,8 @@
                     android:background="@color/cardview_light_background"
                     android:text="Was there an issue? Report this trail"
                     android:textAllCaps="false"
-                    android:textColor="@color/colorAccent" />
+                    android:textColor="@color/colorPrimary"
+                    android:onClick="@{(v) -> handlers.Companion.onSubmitReportClicked(v)}"/>
 
                 <Button
                     android:id="@+id/discover_item_start_hike"
@@ -318,11 +310,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:background="@color/colorPrimary"
-                    android:text="@string/start_hike_button"
-                    android:textColor="@color/cardview_light_background"
+                    android:background="@color/colorAccent"
                     android:elevation="2dp"
-                    android:onClick="@{(view)->handlers.onStartHikingClick(view, lData.placeId)}"/>
+                    android:onClick="@{(view)->handlers.onStartHikingClick(view, lData.placeId)}"
+                    android:text="@string/start_hike_button"
+                    android:textColor="@color/cardview_light_background" />
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
         <include layout="@layout/layout_toolbar"
