@@ -13,6 +13,8 @@ class ReportLocationActivity : AppCompatActivity(), ReportLocationFragment.Repor
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report_location)
+
+        supportActionBar?.hide()
     }
 
     override fun reportClicked(report: String) {

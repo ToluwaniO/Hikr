@@ -17,10 +17,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.tpad.hikr.DataClasses.ActiveHikesData
 import com.tpad.hikr.Fragments.DatePickerFragment
 
-/**
- * Created by oguns on 7/30/2017.
- */
-
 class MyHandlers {
     private var databaseReference: DatabaseReference = FirebaseDatabase.getInstance().getReference(HIKE_DATA)
     private val user: FirebaseUser? = FirebaseAuth.getInstance().currentUser
@@ -37,6 +33,11 @@ class MyHandlers {
 
         fun onSubmitReviewClicked(view: View){
             val intent = Intent(view.context, ReviewActivity::class.java)
+            view.context.startActivity(intent)
+        }
+
+        fun onSubmitReportClicked(view: View){
+            val intent = Intent(view.context, ReportLocationActivity::class.java)
             view.context.startActivity(intent)
         }
 
