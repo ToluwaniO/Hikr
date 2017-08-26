@@ -37,5 +37,9 @@
     <string name="rating_view">Was it a five?!</string>
     <string name="submit_review">Submit</string>
 
+    <!-- Report Fragment -->
+    <string name="report_question">Had an issue?</string>
+    <string name="report_hint">What\'s the issue?</string>
+
 
 </resources>
