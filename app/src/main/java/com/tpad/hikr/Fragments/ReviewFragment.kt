@@ -2,7 +2,9 @@ package com.tpad.hikr.Fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,8 +34,8 @@ class ReviewFragment: Fragment(){
         ratingView = rootView.findViewById(R.id.review_rating) as RatingBar
         submitButton = rootView.findViewById(R.id.submit_review) as Button
 
-        submitButton.setOnClickListener(View.OnClickListener { reviewCallback.onSubmitClicked(
-                reviewText.text.toString(), ratingView.rating) })
+        submitButton.setOnClickListener(View.OnClickListener {
+            reviewCallback.onSubmitClicked(reviewText.text.toString(), ratingView.rating) })
 
         return rootView
     }
