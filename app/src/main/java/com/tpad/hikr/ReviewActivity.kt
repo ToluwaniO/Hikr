@@ -1,5 +1,6 @@
 package com.tpad.hikr
 
+import android.app.Activity
 import android.content.Intent
 import android.databinding.DataBindingUtil.setContentView
 import android.support.v7.app.AppCompatActivity
@@ -13,11 +14,13 @@ import com.tpad.hikr.Fragments.ReviewFragment
 import com.tpad.hikr.R
 
 class ReviewActivity : AppCompatActivity(), ReviewFragment.ReviewListener {
+    lateinit var placeId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_review)
         supportActionBar?.hide()
+        placeId = intent.extras.getString("placeId")
     }
     override fun onSubmitClicked(review: String, rating: Float) {
         Log.d(TAG, review)
@@ -25,16 +28,15 @@ class ReviewActivity : AppCompatActivity(), ReviewFragment.ReviewListener {
         val snackbar: Snackbar
         if(TextUtils.isEmpty(review))
         {
-            snackbar = Snackbar.make(view, getString(R.string.review_empty), Snackbar.LENGTH_SHORT)
-            snackbar.show()
+            MyHandlers.Companion.displayToast(this, getString(R.string.review_empty))
         }
         else if(rating == 0F)
         {
-            snackbar = Snackbar.make(view, getString(R.string.rating_zero), Snackbar.LENGTH_SHORT)
-            snackbar.show()
+            MyHandlers.Companion.displayToast(this, getString(R.string.rating_zero))
         }
         else {
-            MyHandlers.Companion.postLocationReview(rating, review)
+            MyHandlers.Companion.postLocationReview(view, placeId, rating, review)
+            //finish()
         }
     }
 

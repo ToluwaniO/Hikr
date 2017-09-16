@@ -38,6 +38,9 @@
     <string name="submit_review">Submit</string>
     <string name="review_empty">Review cannot be empty</string>
     <string name="rating_zero">Rating cannot be zero</string>
+    <string name="rating_added">Rating added</string>
+    <string name="rating_failed">Unfortunately, your was not posted.</string>
+
     <!-- Report Fragment -->
     <string name="report_question">Had an issue?</string>
     <string name="report_hint">What\'s the issue?</string>

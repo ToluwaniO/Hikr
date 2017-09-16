@@ -5,10 +5,14 @@ package com.tpad.hikr
  */
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.FragmentManager
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
@@ -31,21 +35,40 @@ class MyHandlers {
 
     companion object {
 
-        fun onSubmitReviewClicked(view: View){
+        fun onSubmitReviewClicked(view: View, placeId: String){
             val intent = Intent(view.context, ReviewActivity::class.java)
+            val bundle = Bundle()
+            bundle.putString("placeId", placeId)
+            intent.putExtras(bundle)
             view.context.startActivity(intent)
         }
 
-        fun onSubmitReportClicked(view: View){
+        fun onSubmitReportClicked(view: View, placeId: String){
             val intent = Intent(view.context, ReportLocationActivity::class.java)
+            val bundle = Bundle()
+            bundle.putString("placeId", placeId)
+            intent.putExtras(bundle)
             view.context.startActivity(intent)
         }
 
-        fun postLocationReview(rating: Float, review: String)
+        fun postLocationReview(view: View, placeId: String, rating: Float, review: String)
         {
-            databaseReference = firebaseDatabase.getReference("ratings_reviews")
+            databaseReference = firebaseDatabase.getReference("ratings_reviews").child(placeId)
             val reviewRating = Review(rating, review, System.currentTimeMillis())
-            user?.let { databaseReference.child(user.uid).setValue(reviewRating) }
+            user?.let { databaseReference.child(user.uid).setValue(reviewRating)
+                    .addOnCompleteListener { displayToast(view.context, view.context.getString(R.string.rating_added))
+                        (view.context as Activity).finish()}
+                    .addOnFailureListener { displayToast(view.context, view.context.getString(R.string.rating_failed)) } }
+        }
+
+        fun displaySnackbar(view: View, message: String)
+        {
+            Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
+        }
+
+        fun displayToast(context: Context, message: String)
+        {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
 
         private val TAG = MyHandlers::class.java.simpleName
