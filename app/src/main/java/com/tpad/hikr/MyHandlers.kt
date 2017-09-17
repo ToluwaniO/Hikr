@@ -21,6 +21,17 @@ import com.google.firebase.database.FirebaseDatabase
 import com.tpad.hikr.DataClasses.ActiveHikesData
 import com.tpad.hikr.DataClasses.Review
 import com.tpad.hikr.Fragments.DatePickerFragment
+import com.google.android.gms.location.LocationSettingsStatusCodes
+import android.content.IntentSender
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.android.gms.common.api.ApiException
+import android.support.annotation.NonNull
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.location.LocationSettingsResponse
+import com.google.android.gms.tasks.OnSuccessListener
+
+
 
 class MyHandlers {
 

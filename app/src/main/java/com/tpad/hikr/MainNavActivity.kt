@@ -2,16 +2,19 @@ package com.tpad.hikr
 
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.support.annotation.NonNull
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
@@ -27,13 +30,18 @@ import com.bumptech.glide.Glide
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ResultCodes
 import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
 import com.google.android.gms.location.places.Places
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.tpad.hikr.Fragments.ActiveHikesFragment
 import com.tpad.hikr.Fragments.HikrDiaryFragment
@@ -50,6 +58,7 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     internal lateinit var rootLayout: LinearLayout
     internal lateinit var noNetwork: LinearLayout
     internal lateinit var fragmentFrame: FrameLayout
+    var resolvable: ResolvableApiException? = null
 
     //GOOGLE APIS
 
@@ -60,6 +69,7 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     // A default location (Sydney, Australia) and default zoom to use when location permission is
     // not granted.
     private var mLocationPermissionGranted: Boolean = false
+    val REQUEST_CHECK_SETTINGS = 1459
 
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
@@ -87,6 +97,7 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         setContentView(R.layout.activity_main_nav)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
+        createLocationRequest()
         rootLayout = findViewById(R.id.root) as LinearLayout
         fragmentFrame = findViewById(R.id.main_frame) as FrameLayout
 
@@ -247,7 +258,6 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
-        showCurrentPlace()
     }
 
     /**
@@ -265,7 +275,6 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                 }
             }
         }
-        showCurrentPlace()
     }
 
     /**
@@ -297,7 +306,12 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                     // Release the place likelihood buffer, to avoid memory leaks.
                     likelyPlaces.release()
 
-                    checkFragmentWithTagAndDecide(HOME_TAG)
+                    if(!mLikelyPlaceLatLngs.isEmpty()) {
+                        checkFragmentWithTagAndDecide(HOME_TAG)
+                    }
+                    else{
+                        Toast.makeText(this, "Could not get you location!", Toast.LENGTH_LONG).show()
+                    }
 
                 }
             })
@@ -323,6 +337,25 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                 Toast.makeText(this, "Sign in failed", Toast.LENGTH_LONG).show()
             }
 
+        }
+        else if(requestCode == REQUEST_CHECK_SETTINGS){
+            Log.d(TAG, "GPS RESULT " + resultCode)
+            if(resultCode == LocationSettingsStatusCodes.SUCCESS || resultCode == LocationSettingsStatusCodes.SUCCESS_CACHE)
+            {
+                Log.d(TAG, "GPS IS ENABLED")
+                mLocationPermissionGranted = true
+                showCurrentPlace()
+            }
+            else{
+                try {
+                    // Show the dialog by calling startResolutionForResult(),
+                    // and check the result in onActivityResult().
+                    resolvable?.startResolutionForResult(this@MainNavActivity,
+                            REQUEST_CHECK_SETTINGS)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // Ignore the error.
+                }
+            }
         }
     }
 
@@ -405,6 +438,50 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         val snackbar = Snackbar.make(rootLayout, getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG)
         snackbar.show()
     }
+
+    protected fun createLocationRequest() {
+        val mLocationRequest = LocationRequest()
+        mLocationRequest.interval = 10000
+        mLocationRequest.fastestInterval = 5000
+        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+
+        val builder = LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest)
+        val client = LocationServices.getSettingsClient(this);
+        val task = client.checkLocationSettings(builder.build());
+
+        task.addOnSuccessListener(this, OnSuccessListener<LocationSettingsResponse> {
+            // All location settings are satisfied. The client can initialize
+            // location requests here.
+            // ...
+            mLocationPermissionGranted = true
+        })
+
+        task.addOnFailureListener(this, OnFailureListener { e ->
+            val statusCode = (e as ApiException).statusCode
+            when (statusCode) {
+                CommonStatusCodes.RESOLUTION_REQUIRED ->
+                    // Location settings are not satisfied, but this can be fixed
+                    // by showing the user a dialog.
+                    try {
+                        // Show the dialog by calling startResolutionForResult(),
+                        // and check the result in onActivityResult().
+                        resolvable = e as ResolvableApiException
+                        resolvable?.startResolutionForResult(this@MainNavActivity,
+                                REQUEST_CHECK_SETTINGS)
+                    } catch (sendEx: IntentSender.SendIntentException) {
+                        // Ignore the error.
+                    }
+
+                LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                }
+            }// Location settings are not satisfied. However, we have no way
+            // to fix the settings so we won't show the dialog.
+        })
+
+    }
+
+
 
     companion object {
         private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
