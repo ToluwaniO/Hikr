@@ -65,10 +65,10 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     private var googleMap: GoogleMap? = null
     private var mCameraPosition: CameraPosition? = null
     private lateinit var googleApiClient: GoogleApiClient
+    private var mLocationPermissionGranted: Boolean = false
 
     // A default location (Sydney, Australia) and default zoom to use when location permission is
     // not granted.
-    private var mLocationPermissionGranted: Boolean = false
     val REQUEST_CHECK_SETTINGS = 1459
 
     // The geographical location where the device is currently located. That is, the last-known
@@ -87,7 +87,6 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     internal lateinit var activeHikesFragment: ActiveHikesFragment
 
     internal var savedUsed = false
-    internal var latDataAvailable = false
 
     private var mAuth: FirebaseAuth? = null
     private var headerView: View? = null
@@ -149,13 +148,7 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         hikrDiaryFragment = HikrDiaryFragment()
         activeHikesFragment = ActiveHikesFragment()
 
-        //mainFragManager = supportFragmentManager
-
         Log.d(TAG, "APP STARTED")
-    }
-
-    private fun setupApiClient(){
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -182,7 +175,8 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START)
-        } else {
+        }
+        else {
             super.onBackPressed()
         }
     }
@@ -197,11 +191,9 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
 
-
         if (id == R.id.action_settings) {
             return true
         }
-
         return super.onOptionsItemSelected(item)
     }
 
@@ -210,16 +202,21 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         val id = item.itemId
         if (id == R.id.nav_home) {
             checkFragmentWithTagAndDecide(HOME_TAG)
-        } else if (id == R.id.nav_discover) {
+        }
+        else if (id == R.id.nav_discover) {
             checkFragmentWithTagAndDecide(DISCOVER_TAG)
-        } else if (id == R.id.nav_active_hikes) {
+        }
+        else if (id == R.id.nav_active_hikes) {
             checkFragmentWithTagAndDecide(ACTIVE_TAG)
-        } else if (id == R.id.nav_hikr_diary) {
+        }
+        else if (id == R.id.nav_hikr_diary) {
             checkFragmentWithTagAndDecide(DIARY_TAG)
-        } else if (id == R.id.action_settings) {
+        }
+        else if (id == R.id.action_settings) {
             val intent = Intent(this@MainNavActivity, MapsActivity::class.java)
             startActivity(intent)
-        } else if (id == R.id.nav_logout) {
+        }
+        else if (id == R.id.nav_logout) {
             mAuth?.signOut().let {
                 startActivityForResult(
                         AuthUI.getInstance()
@@ -283,7 +280,6 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
      */
     private fun showCurrentPlace() {
         Log.d(TAG, "Entered showCUrrentPlace()")
-
         if (mLocationPermissionGranted) {
             // Get the likely places - that is, the businesses and other points of interest that
             // are the best match for the device's current location.
@@ -317,7 +313,8 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
             })
 
             thread.start()
-        } else {
+        }
+        else {
             ActivityCompat.requestPermissions(this,
                     arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
@@ -333,15 +330,15 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
             if (resultCode == ResultCodes.OK) {
                 Toast.makeText(this, "Sign in succesful", Toast.LENGTH_LONG).show()
                 return
-            } else {
+            }
+            else {
                 Toast.makeText(this, "Sign in failed", Toast.LENGTH_LONG).show()
             }
 
         }
         else if(requestCode == REQUEST_CHECK_SETTINGS){
             Log.d(TAG, "GPS RESULT " + resultCode)
-            if(resultCode == LocationSettingsStatusCodes.SUCCESS || resultCode == LocationSettingsStatusCodes.SUCCESS_CACHE)
-            {
+            if(resultCode == LocationSettingsStatusCodes.SUCCESS || resultCode == LocationSettingsStatusCodes.SUCCESS_CACHE) {
                 Log.d(TAG, "GPS IS ENABLED")
                 mLocationPermissionGranted = true
                 showCurrentPlace()
@@ -352,7 +349,8 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                     // and check the result in onActivityResult().
                     resolvable?.startResolutionForResult(this@MainNavActivity,
                             REQUEST_CHECK_SETTINGS)
-                } catch (sendEx: IntentSender.SendIntentException) {
+                }
+                catch (sendEx: IntentSender.SendIntentException) {
                     // Ignore the error.
                 }
             }
@@ -369,16 +367,6 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         else {
             replaceFragment(tag)
         }
-    }
-
-    private fun getFragment():Fragment?{
-        var fragment: Fragment? = null
-        for (i in mainFragManager.fragments){
-            if(i.isVisible){
-                return i
-            }
-        }
-        return null
     }
 
     private fun addFragment(tag: String){
@@ -416,10 +404,8 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     val isConnected: Boolean
         get() {
             val cm = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
             val activeNetwork = cm.activeNetworkInfo
             val isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting
-
             return isConnected
         }
 
@@ -480,8 +466,6 @@ class MainNavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         })
 
     }
-
-
 
     companion object {
         private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1

@@ -35,7 +35,6 @@ import com.google.android.gms.tasks.OnSuccessListener
 
 class MyHandlers {
 
-
     fun onStartHikingClick(view: View, placeId: String) {
 //        val datePickerDialog = DatePickerFragment()
 //
@@ -62,8 +61,7 @@ class MyHandlers {
             view.context.startActivity(intent)
         }
 
-        fun postLocationReview(view: View, placeId: String, rating: Float, review: String)
-        {
+        fun postLocationReview(view: View, placeId: String, rating: Float, review: String) {
             databaseReference = firebaseDatabase.getReference("ratings_reviews").child(placeId)
             val reviewRating = Review(rating, review, System.currentTimeMillis())
             user?.let { databaseReference.child(user.uid).setValue(reviewRating)
@@ -72,13 +70,11 @@ class MyHandlers {
                     .addOnFailureListener { displayToast(view.context, view.context.getString(R.string.rating_failed)) } }
         }
 
-        fun displaySnackbar(view: View, message: String)
-        {
+        fun displaySnackbar(view: View, message: String) {
             Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
         }
 
-        fun displayToast(context: Context, message: String)
-        {
+        fun displayToast(context: Context, message: String) {
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
 
@@ -89,4 +85,5 @@ class MyHandlers {
         private var databaseReference: DatabaseReference = firebaseDatabase.getReference(HIKE_DATA)
         private val user: FirebaseUser? = FirebaseAuth.getInstance().currentUser
     }
+
 }

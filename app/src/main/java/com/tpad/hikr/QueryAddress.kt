@@ -20,7 +20,8 @@ class QueryAddress{
             try {
                 var addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
                 return addresses[0].locality
-            } catch (e: IOException) {
+            }
+            catch (e: IOException) {
                 Log.d(LOG_TAG, "error: ${e.toString()}")
             }
             return null
@@ -29,8 +30,7 @@ class QueryAddress{
         fun getCityFromAddress(address: String): String? {
             Log.d(LOG_TAG, "get city name from address - $address")
             var list: List<String>? = null
-            if(address.contains(','))
-            {
+            if(address.contains(',')) {
                 list = address.split(",")
                 Log.d(LOG_TAG, ", is present $list")
             }
@@ -50,7 +50,8 @@ class QueryAddress{
                 if (addresses.size > 0) {
                     return addresses[0].countryName
                 }
-            } catch (e: IOException) {
+            }
+            catch (e: IOException) {
                 Log.d(LOG_TAG, "error: ${e.toString()}")
             }
             return null
