@@ -20,12 +20,10 @@ class QueryWeather{
         val LOG_TAG = QueryWeather::class.java.simpleName
         fun createUrl(url: String) = URL(url)
 
-        fun parseJson(jsonString: String): ArrayList<Weather>
-        {
+        fun parseJson(jsonString: String): ArrayList<Weather> {
             val weatherList = ArrayList<Weather>()
 
-            try
-            {
+            try {
                 val json = JSONObject(jsonString)
                 val list = json.getJSONArray("list")
 
@@ -50,15 +48,13 @@ class QueryWeather{
                     }
                 }
             }
-            catch (e: JSONException)
-            {
+            catch (e: JSONException) {
                 Log.d(LOG_TAG, e.toString())
             }
             return weatherList
         }
 
-        fun getWeatherData(latLng: LatLng): ArrayList<Weather>
-        {
+        fun getWeatherData(latLng: LatLng): ArrayList<Weather> {
             val lat = latLng.latitude
             val lon = latLng.longitude
             var urlString = WeatherContract.URL.replace("{lat}", lat.toString())

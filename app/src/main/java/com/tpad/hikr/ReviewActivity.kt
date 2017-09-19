@@ -25,7 +25,7 @@ class ReviewActivity : AppCompatActivity(), ReviewFragment.ReviewListener {
     override fun onSubmitClicked(review: String, rating: Float) {
         Log.d(TAG, review)
         val view = findViewById(R.id.review_activity)
-        val snackbar: Snackbar
+
         if(TextUtils.isEmpty(review))
         {
             MyHandlers.Companion.displayToast(this, getString(R.string.review_empty))
@@ -36,7 +36,6 @@ class ReviewActivity : AppCompatActivity(), ReviewFragment.ReviewListener {
         }
         else {
             MyHandlers.Companion.postLocationReview(view, placeId, rating, review)
-            //finish()
         }
     }
 

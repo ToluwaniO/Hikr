@@ -81,7 +81,8 @@ public class SplashActivity extends AppCompatActivity {
                     Intent intent = new Intent(SplashActivity.this, MainNavActivity.class);
                     startActivity(intent);
                     return;
-                } else {
+                }
+                else {
                     // Sign in failed
                     if (response == null) {
                         // User pressed back button

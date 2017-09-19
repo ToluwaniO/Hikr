@@ -36,7 +36,6 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
 
     companion object {
         var mGoogleApiClient : GoogleApiClient? = null
-
         private val TAG = QueryUtils::class.java.simpleName
 
         fun setApiClient(client : GoogleApiClient) {
@@ -162,8 +161,8 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
 
         fun getHikeLocations(link: String, locale: String?, country: String?, context: Context): ArrayList<HikeLocationData> {
             var json: String? = null
-
             var dataLoc: Cursor? = null
+
             if(locale != null && country != null)
                 dataLoc= getLocation(locale, country, context)
 
@@ -177,7 +176,8 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
                         insertLocation(locale, country, json as String, context)
                     }
                     }
-                } catch (e: IOException) {
+                }
+                catch (e: IOException) {
                     Log.d(TAG, "IO", e)
                 }
             }
@@ -199,7 +199,8 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
                 if (addresses.size > 0) {
                     return addresses[0].getAddressLine(1)
                 }
-            } catch (e: IOException) {
+            }
+            catch (e: IOException) {
                 e.printStackTrace()
             }
             return null
@@ -227,7 +228,6 @@ class QueryUtils(val url: String, val dbHelper: HikeLocationDbHelper) {
             val  selection = "${HikeLocationEntry.COLUMN_LOCALE_NAME} =? AND ${HikeLocationEntry.COLUMN_COUNTRY_NAME} = ?"
             val selectionArgs = arrayOf<String>(locale, country)
             val cursor = context.contentResolver.query(HikeLocationEntry.CONTENT_URI, projection, selection, selectionArgs, null)
-
             return cursor
         }
     }
